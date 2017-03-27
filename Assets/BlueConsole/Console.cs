@@ -21,6 +21,7 @@ namespace Blue.Console
 		{
 			console = transform.GetChild (0).gameObject;
 			scrllBar.value = 0;
+            cmds.evtCommand.Invoke();
 		}
 
 		void Update ()
