@@ -64,7 +64,7 @@ namespace Blue.Console
             cmdInputs.OnSelect(null);
         }
 
-        void WriteInConsole(string text)
+        public void WriteInConsole(string text)
         {
             if (!string.IsNullOrEmpty(text))
             {
