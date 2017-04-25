@@ -8,6 +8,7 @@ namespace Blue.Console {
 	public class ConsoleOutput : MonoBehaviour {
         public string output = "";
         public string stack = "";
+        ConsoleGUI gui;
 
         void OnEnable() {
             Application.logMessageReceived += HandleLog;
@@ -17,6 +18,11 @@ namespace Blue.Console {
             Application.logMessageReceived -= HandleLog;
         }
 
+        public void init(ConsoleGUI cGui){
+            gui = cGui;
+            Application.logMessageReceived += HandleLog;
+        }
+
         void HandleLog(string logString, string stackTrace, LogType type) {
             output = logString;
             stack = stackTrace;
@@ -24,7 +30,6 @@ namespace Blue.Console {
             gui.LogMessage(type, stackTrace, logString);
         }
 
-        ConsoleGUI gui;
         void Start(){
             gui = GetComponent<ConsoleGUI> ();
             InvokeRepeating ("test", 1f, 1f);

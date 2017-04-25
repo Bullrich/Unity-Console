@@ -22,11 +22,21 @@ namespace Blue.Console {
                 stackTrace, logMessage, info);
         }
 
-        private void Start() {
+        private void Awake() {
             guiManager = new ConsoleGuiManager(
                 logScroll.transform.parent.GetComponent<ScrollRect>(), logDetail);
             detailInformation = popUpDetail.GetChild(0).GetChild(0).GetComponent<Text>();
             CleanConsole();
+        }
+
+        private void Start(){
+
+            Debug.Log (Debug.isDebugBuild);
+            //ConsoleActions.AddAction (Ble, "ACTION");
+        }
+
+        void Ble(int ja){
+            Debug.Log(ja + " HOLAAAA");
         }
 
         void Update() {
@@ -64,7 +74,16 @@ namespace Blue.Console {
         public void FilterLogs(FilterAction alertButton) {
             guiManager.FilterList(alertButton.logType);
             Image buttonSprite = alertButton.transform.GetChild(0).GetComponent<Image>();
-            buttonSprite.color = buttonSprite.color == Color.white ? Color.black : Color.white;
+            Color defaultColor = Color.white;
+            if (alertButton.logType == LogType.Error)
+                defaultColor = Color.red;
+            else if (alertButton.logType == LogType.Warning)
+                    defaultColor = Color.yellow;
+            buttonSprite.color = buttonSprite.color == defaultColor ? Color.black : defaultColor;
+        }
+
+        public void PauseConsole(){
+            guiManager.PauseList ();
         }
         #endregion
     }

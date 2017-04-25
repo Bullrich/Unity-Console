@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.84705883, g: 0.84705883, b: 0.84705883, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -216,6 +216,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logMessage: {fileID: 114624866789251988}
   logType: {fileID: 114227721628018810}
+  gui: {fileID: 0}
 --- !u!222 &222297831086633910
 CanvasRenderer:
   m_ObjectHideFlags: 1

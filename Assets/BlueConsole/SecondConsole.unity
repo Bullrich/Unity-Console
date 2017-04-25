@@ -240,12 +240,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!224 &1614960430 stripped
-RectTransform:
-  m_PrefabParentObject: {fileID: 224250878712342292, guid: 233d074a4b40046fb8eb91283654e487,
-    type: 2}
-  m_PrefabInternal: {fileID: 1696922037}
---- !u!1001 &1696922037
+--- !u!1001 &1497443862
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -345,6 +340,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 233d074a4b40046fb8eb91283654e487, type: 2}
   m_IsPrefabParent: 0
+--- !u!224 &1614960430 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224250878712342292, guid: 233d074a4b40046fb8eb91283654e487,
+    type: 2}
+  m_PrefabInternal: {fileID: 1497443862}
 --- !u!1 &1885351960
 GameObject:
   m_ObjectHideFlags: 0
