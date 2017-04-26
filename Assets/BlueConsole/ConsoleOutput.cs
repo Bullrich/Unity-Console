@@ -10,13 +10,13 @@ namespace Blue.Console {
         public string stack = "";
         ConsoleGUI gui;
 
-        void OnEnable() {
+        /*void OnEnable() {
             Application.logMessageReceived += HandleLog;
         }
 
         void OnDisable() {
             Application.logMessageReceived -= HandleLog;
-        }
+        }*/
 
         public void init(ConsoleGUI cGui){
             gui = cGui;
@@ -26,19 +26,11 @@ namespace Blue.Console {
         void HandleLog(string logString, string stackTrace, LogType type) {
             output = logString;
             stack = stackTrace;
-
+            if(canShow)
             gui.LogMessage(type, stackTrace, logString);
         }
 
-        void Start(){
-            gui = GetComponent<ConsoleGUI> ();
-            InvokeRepeating ("test", 1f, 1f);
-        }
 
-        private void Update() {
-            if (Input.GetKey(KeyCode.J))
-                canShow = !canShow;
-        }
         public bool canShow = false;
         void test(){
             if (canShow) {

@@ -16,10 +16,10 @@ namespace Blue.Console
         List<ActionButtonBehavior> actionButtons = new List<ActionButtonBehavior>();
         ScrollRect scrllRect;
         Transform logContainer;
-        LogDetails details;
+        ConsoleGUI.LogDetails details;
         bool listPaused;
 
-        public ConsoleGuiManager (ScrollRect scrollRect, LogDetails logDetails)
+        public ConsoleGuiManager (ScrollRect scrollRect, ConsoleGUI.LogDetails logDetails)
         {
             scrllRect = scrollRect;
             details = logDetails;

@@ -16,6 +16,10 @@ namespace Blue.Console {
 
         private static List<ActionContainer> actions;
 
+        public delegate void ListUpdated(List<ActionContainer> actionList);
+
+        public static event ListUpdated listUpdated;
+
         public static List<ActionContainer> getActions() {
             if (actions == null)
                 actions = new List<ActionContainer>();
@@ -27,6 +31,7 @@ namespace Blue.Console {
                 getActions().Add(container);
             else
                 Debug.LogWarning(string.Format("Action {0} has already being added!", container.actionName));
+            listUpdated (getActions());
         }
 
         public static void AddAction(booleanAction action, string actionName, bool defaultBooleanState) {
