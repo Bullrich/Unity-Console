@@ -13,6 +13,7 @@ namespace Blue.Console
         logsList = new List<LogInfo> (),
         pausedLogs = new List<LogInfo>();
         List<LogType> blockedLogs = new List<LogType> ();
+        List<ActionButtonBehavior> actionButtons = new List<ActionButtonBehavior>();
         ScrollRect scrllRect;
         Transform logContainer;
         LogDetails details;
@@ -38,6 +39,11 @@ namespace Blue.Console
                 newLog.gameObject.SetActive (false);
             else if (!Input.GetMouseButton (0))
                     scrllRect.velocity = new Vector2 (scrllRect.velocity.x, 1000f);
+        }
+
+        public void AddAction(ActionButtonBehavior button) {
+            button.GetComponent<RectTransform>().SetAsLastSibling();
+            actionButtons.Add(button);
         }
 
         public void ClearList()

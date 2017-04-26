@@ -10,7 +10,9 @@ namespace Blue.Console {
         [Tooltip("Prefab object")]
         public LogInfo logInfo;
         public Transform logScroll, popUpDetail;
+        Transform logSection, actionSection;
         Text detailInformation;
+        public ActionButtons actionButtons; 
 
         public LogDetails logDetail;
         ConsoleGuiManager guiManager;
@@ -27,16 +29,53 @@ namespace Blue.Console {
                 logScroll.transform.parent.GetComponent<ScrollRect>(), logDetail);
             detailInformation = popUpDetail.GetChild(0).GetChild(0).GetComponent<Text>();
             CleanConsole();
+            logSection = logScroll.transform.parent;
+            actionSection = actionButtons.actionsContainer.transform.parent.parent;
+            Invoke("SetActions", 0.5f);
+        }
+
+        void SetActions() {
+            List<ConsoleActions.ActionContainer> actions = ConsoleActions.getActions();
+            foreach(ConsoleActions.ActionContainer acon in actions) {
+                ActionButtonBehavior actionButton = actionButtons.actionBtnPrefab;
+                Transform parent = actionButtons.actionsContainer.transform;
+                if(acon.actType != ConsoleActions.ActionContainer.ActionType._void) {
+                    actionButton=actionButtons.variablesBtnPrefab;
+                    parent = actionButtons.variablesContainer.transform;
+                }
+                ActionButtonBehavior spawnedBtn = Instantiate(actionButton);
+                spawnedBtn.transform.SetParent(parent, false);
+                spawnedBtn.Init(acon);
+                guiManager.AddAction(spawnedBtn);
+            }
         }
 
         private void Start(){
 
             Debug.Log (Debug.isDebugBuild);
-            //ConsoleActions.AddAction (Ble, "ACTION");
+            ConsoleActions.AddAction (Ble, "ACTION", 3);
+            ConsoleActions.AddAction(Bla, "This is a bool", false);
+            ConsoleActions.AddAction(Blu, "Print in console");
+            ConsoleActions.AddAction(error, "Print an error");
+            ConsoleActions.AddAction(warning, "Print a warning");
         }
 
         void Ble(int ja){
             Debug.Log(ja + " HOLAAAA");
+        }
+
+        void Bla(bool lol) {
+            Debug.Log("Value is " + lol);
+        }
+
+        void Blu() {
+            Debug.Log("This print in console");
+        }
+        void error() {
+            Debug.LogError("This is an exception!");
+        }
+        void warning() {
+            Debug.LogWarning("This is a warning");
         }
 
         void Update() {
@@ -46,6 +85,11 @@ namespace Blue.Console {
                 GameObject child = transform.GetChild(0).gameObject;
                 child.SetActive(!child.activeSelf);
             }
+        }
+
+        public void ToggleActions() {
+            actionSection.gameObject.SetActive(!actionSection.gameObject.activeSelf);
+            logSection.gameObject.SetActive(!logSection.gameObject.activeSelf);
         }
 
         #region ButtonFunctions
@@ -86,6 +130,16 @@ namespace Blue.Console {
             guiManager.PauseList ();
         }
         #endregion
+
+        [System.Serializable]
+        public class ActionButtons {
+            [Header("Actions")]
+            public VerticalLayoutGroup actionsContainer;
+            public ActionButtonBehavior actionBtnPrefab;
+            [Header("Variables")]
+            public VerticalLayoutGroup variablesContainer;
+            public ActionButtonBehavior variablesBtnPrefab;
+        }
     }
 
     [System.Serializable]
