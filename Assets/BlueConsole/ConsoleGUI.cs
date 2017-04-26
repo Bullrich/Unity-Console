@@ -22,7 +22,7 @@ namespace Blue.Console
         private List<ConsoleActions.ActionContainer> actionsList;
 
         [SerializeField]
-        private SwipeManager swipeManager;
+        private SwipeManager openConsoleSettings;
 
         public void LogMessage(LogType type, string stackTrace, string logMessage)
         {
@@ -69,11 +69,12 @@ namespace Blue.Console
 
         void Update()
         {
-            if (swipeManager.didSwipe ())
+            if (openConsoleSettings.didSwipe ())
                 SwitchConsole ();
         }
 
-        private void SwitchConsole(){
+        private void SwitchConsole()
+        {
             Image backgroundImage = GetComponent<Image> ();
             backgroundImage.enabled = !backgroundImage.enabled;
             GameObject child = transform.GetChild (0).gameObject;
@@ -246,66 +247,31 @@ namespace Blue.Console
             public enum swDirection
             {
                 left,
-right,
-down,
-up
+                right,
+                down,
+                up
 
             }
 
             public swDirection swipeDirection = swDirection.down;
-            [Range(1, 4)]
+            [Range (1, 4)]
             public int fingersNeed = 2;
+
+            public KeyCode openConsoleKey = KeyCode.Tab;
 
             public bool didSwipe()
             {
+                #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
                 return SwipedInDirection ();
+                #else
+                if (Input.GetKeyDown (openConsoleKey))
+                    return true;
+                return false;
+                #endif
             }
 
-            #if !UNITY_EDITOR || UNITY_STANDALONE
-            
-                public void Swipe()
-                {
-                if(Input.GetMouseButtonDown(0))
-                {
-                //save began touch 2d point
-                firstPressPos = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
-                }
-                if(Input.GetMouseButtonUp(0))
-                {
-                //save ended touch 2d point
-                secondPressPos = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
 
-                //create vector from the two points
-                currentSwipe = new Vector2(secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
-
-                //normalize the 2d vector
-                currentSwipe.Normalize();
-
-                //swipe upwards
-                if(currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
-                {
-                Debug.Log("up swipe");
-                }
-                //swipe down
-                if(currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f)
-                {
-                Debug.Log("down swipe");
-                }
-                //swipe left
-                if(currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
-                {
-                Debug.Log("left swipe");
-                }
-                //swipe right
-                if(currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f)
-                {
-                Debug.Log("right swipe");
-                }
-                }
-                }
-                #endif
-
-            #if UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
 
             public bool SwipedInDirection()
             {
@@ -316,7 +282,6 @@ up
                         firstPressPos = new Vector2 (t.position.x, t.position.y);
                     }
                     if (t.phase == TouchPhase.Ended) {
-                        print ("ENTERED");
                         //save ended touch 2d point
                         secondPressPos = new Vector2 (t.position.x, t.position.y);
 
@@ -330,27 +295,20 @@ up
                         if (swipeDirection == swDirection.up && currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f) {
                             return true;
                             //Debug.Log("up swipe");
-                        }
-                        //swipe down
-                        else if (swipeDirection == swDirection.down && currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f) {
-                            //Debug.Log("down swipe");
-                            return true;
-                        }
-                        //swipe left
-                        else if (swipeDirection == swDirection.left && currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f) {
-                            return true;
-                            //Debug.Log("left swipe");
-                        }
-                        //swipe right
-                        else if (swipeDirection == swDirection.right && currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f) {
-                            return true;
-                            //Debug.Log("right swipe");
-                        }
+                        } else if (swipeDirection == swDirection.down && currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f) {
+                                //Debug.Log("down swipe");
+                                return true;
+                            } else if (swipeDirection == swDirection.left && currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f) {
+                                    return true;
+                                    //Debug.Log("left swipe");
+                                } else if (swipeDirection == swDirection.right && currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f) {
+                                        return true;
+                                        //Debug.Log("right swipe");
+                                    }
                     }
                 }
                 return false;
             }
-
             #endif
         }
     }
