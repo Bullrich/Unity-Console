@@ -26,18 +26,7 @@ namespace Blue.Console {
         void HandleLog(string logString, string stackTrace, LogType type) {
             output = logString;
             stack = stackTrace;
-            if(canShow)
             gui.LogMessage(type, stackTrace, logString);
-        }
-
-
-        public bool canShow = false;
-        void test(){
-            if (canShow) {
-                print("random: " + Random.Range(0, 12));
-                Debug.LogAssertion("This is a assertion");
-                Debug.LogWarning("WARNING");
-            }   
         }
     }
 }

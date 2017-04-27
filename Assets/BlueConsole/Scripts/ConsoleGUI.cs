@@ -32,7 +32,7 @@ namespace Blue.Console
                 stackTrace, logMessage, info);
         }
 
-        private void Awake()
+        public void init()
         {
             guiManager = new ConsoleGuiManager (
                 logScroll.transform.parent.GetComponent<ScrollRect> (), logDetail);
@@ -47,11 +47,12 @@ namespace Blue.Console
 
         void SetActions()
         {
-            List<ConsoleActions.ActionContainer> actions = ConsoleActions.getActions ();
+            List<ConsoleActions.ActionContainer> actions = new List<ConsoleActions.ActionContainer>(ConsoleActions.getActions ());
             foreach (ConsoleActions.ActionContainer acon in actions) {
                 AddActionElement (acon);
             }
         }
+
 
         private void AddActionElement(ConsoleActions.ActionContainer acon)
         {
@@ -73,7 +74,7 @@ namespace Blue.Console
                 SwitchConsole ();
         }
 
-        private void SwitchConsole()
+        public void SwitchConsole()
         {
             Image backgroundImage = GetComponent<Image> ();
             backgroundImage.enabled = !backgroundImage.enabled;
@@ -95,7 +96,6 @@ namespace Blue.Console
                     }
                 actionsList = new List<ConsoleActions.ActionContainer> (actions);
             }
-
         }
 
         #region ButtonFunctions
