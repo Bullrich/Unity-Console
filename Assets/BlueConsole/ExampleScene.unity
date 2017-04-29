@@ -276,8 +276,8 @@ Prefab:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1922871474741222, guid: 0b42c34f9f07a437f93580a76e44ef9e, type: 2}
-      propertyPath: m_Name
-      value: GameConsole
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224986354997963598, guid: 0b42c34f9f07a437f93580a76e44ef9e,
         type: 2}
@@ -308,14 +308,6 @@ Prefab:
         type: 2}
       propertyPath: m_SizeDelta.y
       value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 1498358091626348, guid: 0b42c34f9f07a437f93580a76e44ef9e, type: 2}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1922871474741222, guid: 0b42c34f9f07a437f93580a76e44ef9e, type: 2}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0b42c34f9f07a437f93580a76e44ef9e, type: 2}

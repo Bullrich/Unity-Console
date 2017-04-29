@@ -23,6 +23,8 @@ namespace Blue.Console
 
         [SerializeField]
         private SwipeManager openConsoleSettings;
+        private string mailSubject;
+        public string DefaultMailDirectory = "example@gmail.com";
 
         public void LogMessage(LogType type, string stackTrace, string logMessage)
         {
@@ -116,6 +118,7 @@ namespace Blue.Console
         public void ShowDetail(LogInfo.ErrorDetail detail)
         {
             detailInformation.text = detail.logString + "\n\n" + detail.stackTrace;
+            mailSubject = string.Format("[{0}] {1}", detail.errorType.ToString(), detail.logString);
             popUpDetail.gameObject.SetActive (true);
         }
 
@@ -124,13 +127,35 @@ namespace Blue.Console
             popUpDetail.gameObject.SetActive (false);
         }
 
-        public void CopyTextToClipboard()
-        {
-            TextEditor editor = new TextEditor ();
-            editor.text = detailInformation.text;
-            editor.SelectAll ();
-            editor.Copy ();
+        public void CopyTextToClipboard() {
+            string textToSend = detailInformation.text;
+            SendEmail(textToSend);
+            
         }
+        void SendEmail(string messageBody) {
+            string email = DefaultMailDirectory;
+            string subject = MyEscapeURL(mailSubject);
+            string body = MyEscapeURL(messageBody);
+            Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
+        }
+        string MyEscapeURL(string url) {
+            return WWW.EscapeURL(url).Replace("+", "%20");
+        }
+
+#if UNITY_ANDROID
+       [System.Obsolete("Deprecated because SendEmail works better and it's multiplatform")]
+        private void ShareTextOnAndroid(string messageTitle, string messageBody) {
+            AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
+            AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
+            intentObject.Call<AndroidJavaObject>("setAction", intentClass.GetStatic<string>("ACTION_SEND"));
+            intentObject.Call<AndroidJavaObject>("setType", "text/plain");
+            intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_SUBJECT"), messageTitle);
+            intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_TEXT"), messageBody);
+            AndroidJavaClass unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity");
+            currentActivity.Call("startActivity", intentObject);
+        }
+#endif
 
         public void FilterLogs(FilterAction alertButton)
         {
@@ -149,7 +174,7 @@ namespace Blue.Console
             guiManager.PauseList ();
         }
 
-        #endregion
+#endregion
 
         [System.Serializable]
         public class ActionButtons
@@ -261,17 +286,17 @@ namespace Blue.Console
 
             public bool didSwipe()
             {
-                #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
                 return SwipedInDirection ();
-                #else
+#else
                 if (Input.GetKeyDown (openConsoleKey))
                     return true;
                 return false;
-                #endif
+#endif
             }
 
 
-            #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
 
             public bool SwipedInDirection()
             {
@@ -309,7 +334,7 @@ namespace Blue.Console
                 }
                 return false;
             }
-            #endif
+#endif
         }
     }
 }
