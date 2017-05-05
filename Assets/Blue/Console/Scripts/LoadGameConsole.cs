@@ -9,27 +9,108 @@ namespace Blue.Console
     public class LoadGameConsole : MonoBehaviour
     {
         public GameObject gameConsole;
+        [SerializeField]
+        public SwipeManager swipeOptions;
 
         void Awake()
         {
-            if (GameObject.Find (gameConsole.name) == null) {
-                StartCoroutine (InitConsole ());
-            } else
-                Debug.LogWarning ("Tried to spawn console, but it already exists!");
+            if (GameObject.Find(gameConsole.name) == null)
+            {
+                StartCoroutine(InitConsole());
+            }
+            else
+                Debug.LogWarning("Tried to spawn console, but it already exists!");
         }
 
-        IEnumerator InitConsole(){
-            GameObject console = Instantiate (gameConsole);
+        IEnumerator InitConsole()
+        {
+            GameObject console = Instantiate(gameConsole);
             console.name = gameConsole.name;
-            ConsoleGUI guiConsole = console.transform.GetChild(0).GetComponent<ConsoleGUI> ();
-            guiConsole.init ();
-            guiConsole.ToggleActions ();
+            ConsoleGUI guiConsole = console.transform.GetChild(0).GetComponent<ConsoleGUI>();
+            guiConsole.init(swipeOptions);
+            guiConsole.ToggleActions();
 
-            DontDestroyOnLoad (console);
-            yield return new WaitForEndOfFrame ();
-            guiConsole.SwitchConsole ();
-            guiConsole.ToggleActions ();
-            Destroy (gameObject);
+            DontDestroyOnLoad(console);
+            yield return new WaitForEndOfFrame();
+            guiConsole.SwitchConsole();
+            guiConsole.ToggleActions();
+            Destroy(gameObject);
         }
+    }
+
+    [System.Serializable]
+    public class SwipeManager
+    {
+
+        Vector2 firstPressPos;
+        Vector2 secondPressPos;
+        Vector2 currentSwipe;
+
+        public enum swDirection
+        {
+            left,
+            right,
+            down,
+            up
+
+        }
+        
+        public swDirection swipeDirection = swDirection.down;
+        [Range(1, 4)]
+        public int fingersNeed = 2;
+
+        public KeyCode openConsoleKey = KeyCode.Tab;
+
+        public bool didSwipe()
+        {
+#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+                return SwipedInDirection ();
+#else
+            if (Input.GetKeyDown(openConsoleKey))
+                return true;
+            return false;
+#endif
+        }
+
+
+#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+
+            public bool SwipedInDirection()
+            {
+                if (Input.touches.Length > fingersNeed - 1) {
+                    Touch t = Input.GetTouch (0);
+                    if (t.phase == TouchPhase.Began) {
+                        //save began touch 2d point
+                        firstPressPos = new Vector2 (t.position.x, t.position.y);
+                    }
+                    if (t.phase == TouchPhase.Ended) {
+                        //save ended touch 2d point
+                        secondPressPos = new Vector2 (t.position.x, t.position.y);
+
+                        //create vector from the two points
+                        currentSwipe = new Vector3 (secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
+
+                        //normalize the 2d vector
+                        currentSwipe.Normalize ();
+
+                        //swipe upwards
+                        if (swipeDirection == swDirection.up && currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f) {
+                            return true;
+                            //Debug.Log("up swipe");
+                        } else if (swipeDirection == swDirection.down && currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f) {
+                                //Debug.Log("down swipe");
+                                return true;
+                            } else if (swipeDirection == swDirection.left && currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f) {
+                                    return true;
+                                    //Debug.Log("left swipe");
+                                } else if (swipeDirection == swDirection.right && currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f) {
+                                        return true;
+                                        //Debug.Log("right swipe");
+                                    }
+                    }
+                }
+                return false;
+            }
+#endif
     }
 }

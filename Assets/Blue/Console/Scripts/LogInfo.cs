@@ -5,22 +5,26 @@ using UnityEngine.UI;
 
 // Mady by @Bullrich
 
-namespace Blue.Console {
-	public class LogInfo : MonoBehaviour {
+namespace Blue.Console
+{
+    public class LogInfo : MonoBehaviour
+    {
         public Text logMessage;
         public Image logType;
         ErrorDetail logDetail;
         [HideInInspector]
         public ConsoleGUI gui;
 
-        public void LoadLog(ErrorDetail eDetail) {
+        public void LoadLog(ErrorDetail eDetail)
+        {
             logDetail = eDetail;
 
             PopulateLog(eDetail.logSprite, eDetail.logString);
             logType.color = colorOfLog(eDetail.errorType);
         }
 
-        private Color colorOfLog(LogType type) {
+        private Color colorOfLog(LogType type)
+        {
             Color logColor = Color.white;
             if (type == LogType.Assert || type == LogType.Error || type == LogType.Exception)
                 logColor = Color.red;
@@ -29,16 +33,19 @@ namespace Blue.Console {
             return logColor;
         }
 
-        private void PopulateLog(Sprite type, string message) {
+        private void PopulateLog(Sprite type, string message)
+        {
             logType.sprite = type;
             logMessage.text = message;
         }
 
-        public void EnterDetailMode() {
+        public void EnterDetailMode()
+        {
             gui.ShowDetail(logDetail);
         }
 
-        public LogType GetFilterLogType() {
+        public LogType GetFilterLogType()
+        {
             if (logDetail.errorType == LogType.Warning)
                 return LogType.Warning;
             else if (logDetail.errorType == LogType.Log)
@@ -47,23 +54,25 @@ namespace Blue.Console {
                 return LogType.Error;
         }
 
-        public struct ErrorDetail {
+        public struct ErrorDetail
+        {
 
             public ErrorDetail(
-                string log, 
-                string stack, 
-                LogType eType, 
-                Sprite sprite) {
+                string log,
+                string stack,
+                LogType eType,
+                Sprite sprite)
+            {
                 logString = log;
                 stackTrace = stack;
                 errorType = eType;
                 logSprite = sprite;
             }
 
-           public  string logString,
-                stackTrace;
+            public string logString,
+                 stackTrace;
             public LogType errorType;
             public Sprite logSprite;
         }
-	}
+    }
 }

@@ -9,75 +9,79 @@ namespace Blue.Console
 {
     public class ConsoleGuiManager
     {
-        List<LogInfo> 
-        logsList = new List<LogInfo> (),
+        List<LogInfo>
+        logsList = new List<LogInfo>(),
         pausedLogs = new List<LogInfo>();
-        List<LogType> blockedLogs = new List<LogType> ();
+        List<LogType> blockedLogs = new List<LogType>();
         List<ActionButtonBehavior> actionButtons = new List<ActionButtonBehavior>();
         ScrollRect scrllRect;
         Transform logContainer;
         ConsoleGUI.LogDetails details;
         bool listPaused;
 
-        public ConsoleGuiManager (ScrollRect scrollRect, ConsoleGUI.LogDetails logDetails)
+        public ConsoleGuiManager(ScrollRect scrollRect, ConsoleGUI.LogDetails logDetails)
         {
             scrllRect = scrollRect;
             details = logDetails;
-            logContainer = scrllRect.transform.GetChild (0);
+            logContainer = scrllRect.transform.GetChild(0);
         }
 
         public void LogMessage(LogType type, string stackTrace, string logMessage, LogInfo newLog)
         {
-            newLog.LoadLog (new LogInfo.ErrorDetail (logMessage, stackTrace, type, errorSprite (type)));
-            newLog.transform.SetParent (logContainer, false);
-            logsList.Add (newLog);
-            if (listPaused) {
-                pausedLogs.Add (newLog);
-                newLog.gameObject.SetActive (false);
+            newLog.LoadLog(new LogInfo.ErrorDetail(logMessage, stackTrace, type, errorSprite(type)));
+            newLog.transform.SetParent(logContainer, false);
+            logsList.Add(newLog);
+            if (listPaused)
+            {
+                pausedLogs.Add(newLog);
+                newLog.gameObject.SetActive(false);
             }
-            else if (blockedLogs.Contains (newLog.GetFilterLogType ()))
-                newLog.gameObject.SetActive (false);
-            else if (!Input.GetMouseButton (0))
-                    scrllRect.velocity = new Vector2 (scrllRect.velocity.x, 1000f);
+            else if (blockedLogs.Contains(newLog.GetFilterLogType()))
+                newLog.gameObject.SetActive(false);
+            else if (!Input.GetMouseButton(0))
+                scrllRect.velocity = new Vector2(scrllRect.velocity.x, 1000f);
         }
 
-        public void AddAction(ActionButtonBehavior button) {
+        public void AddAction(ActionButtonBehavior button)
+        {
             button.GetComponent<RectTransform>().SetAsLastSibling();
             actionButtons.Add(button);
         }
 
         public void ClearList()
         {
-            logsList.Clear ();
-            System.GC.Collect ();
+            logsList.Clear();
+            System.GC.Collect();
         }
 
-        public void PauseList(){
+        public void PauseList()
+        {
             listPaused = !listPaused;
-            if (!listPaused) {
-                foreach (LogInfo log in pausedLogs) {
-                    if (!blockedLogs.Contains (log.GetFilterLogType ()))
-                        log.gameObject.SetActive (true);
+            if (!listPaused)
+            {
+                foreach (LogInfo log in pausedLogs)
+                {
+                    if (!blockedLogs.Contains(log.GetFilterLogType()))
+                        log.gameObject.SetActive(true);
                 }
-                pausedLogs.Clear ();
+                pausedLogs.Clear();
             }
         }
 
         public void FilterList(LogType filter)
         {
-            bool isBlocked = blockedLogs.Contains (filter);
+            bool isBlocked = blockedLogs.Contains(filter);
             if (isBlocked)
-                blockedLogs.Remove (filter);
+                blockedLogs.Remove(filter);
             else
-                blockedLogs.Add (filter);
-            
+                blockedLogs.Add(filter);
+
             foreach (LogInfo log in logsList)
-                if (log.GetFilterLogType () == filter)
-                    if (!pausedLogs.Contains (log) && isBlocked)
-                        log.gameObject.SetActive (isBlocked);
+                if (log.GetFilterLogType() == filter)
+                    if (!pausedLogs.Contains(log) && isBlocked)
+                        log.gameObject.SetActive(isBlocked);
                     else
-                        log.gameObject.SetActive (false);
-            
+                        log.gameObject.SetActive(false);
         }
 
         Sprite errorSprite(LogType logType)
@@ -86,7 +90,7 @@ namespace Blue.Console
             if (logType == LogType.Log)
                 logSprite = details.logInfoSprite;
             else if (logType == LogType.Warning)
-                    logSprite = details.logWarningSprite;
+                logSprite = details.logWarningSprite;
             return logSprite;
         }
     }

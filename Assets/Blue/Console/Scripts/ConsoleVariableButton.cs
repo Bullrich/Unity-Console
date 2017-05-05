@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 namespace Blue.Console
 {
-	public class ConsoleVariableButton : ActionButtonBehavior {
+    public class ConsoleVariableButton : ActionButtonBehavior
+    {
 
         // Variable
         public Text variableText;
@@ -16,13 +17,16 @@ namespace Blue.Console
         System.Delegate variableAction;
         bool isIntVariable;
 
-        public override void Init(ConsoleActions.ActionContainer action) {
-                SetVariableInputs();
+        public override void Init(ActionContainer action)
+        {
+            SetVariableInputs();
             SetAction(action);
         }
 
-        private void SetVariableInputs() {
-            foreach (Transform t in transform) {
+        private void SetVariableInputs()
+        {
+            foreach (Transform t in transform)
+            {
                 if (t.GetComponent<InputField>() != null)
                     field = t.GetComponent<InputField>();
                 else if (t.GetComponent<Toggle>() != null)
@@ -30,21 +34,23 @@ namespace Blue.Console
             }
         }
 
-        private void SetAction(ConsoleActions.ActionContainer action) {
+        private void SetAction(ActionContainer action)
+        {
             variableText.text = action.actionName;
             variableAction = action.action;
-            switch (action.actType) {
-                case ConsoleActions.ActionContainer.ActionType._bool:
+            switch (action.actType)
+            {
+                case ActionContainer.ActionType._bool:
                     Destroy(field.gameObject);
                     toggle.isOn = action.boolStartStatus;
                     break;
-                case ConsoleActions.ActionContainer.ActionType._int:
+                case ActionContainer.ActionType._int:
                     Destroy(toggle.gameObject);
                     field.contentType = InputField.ContentType.IntegerNumber;
                     isIntVariable = true;
                     field.placeholder.GetComponent<Text>().text = action.intDefaultValue.ToString();
                     break;
-                case ConsoleActions.ActionContainer.ActionType._float:
+                case ActionContainer.ActionType._float:
                     Destroy(toggle.gameObject);
                     field.contentType = InputField.ContentType.DecimalNumber;
                     isIntVariable = false;
@@ -55,11 +61,13 @@ namespace Blue.Console
             }
         }
 
-        public void BooleanAction(bool boolean) {
+        public void BooleanAction(bool boolean)
+        {
             variableAction.DynamicInvoke(boolean);
         }
 
-        public void OnInputEnd() {
+        public void OnInputEnd()
+        {
             string value = field.text;
             if (isIntVariable)
                 variableAction.DynamicInvoke(int.Parse(value));

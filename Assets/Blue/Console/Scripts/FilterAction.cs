@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace Blue.Console
 {
-	public class FilterAction : MonoBehaviour {
+    public class FilterAction : MonoBehaviour
+    {
         public LogType logType;
-	}
+    }
 }
