@@ -1,0 +1,2 @@
+# Unity-Console
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f8a05421a37846c2a7a2156284a773ad)](https://www.codacy.com/app/javierbullrich/Unity-Console?utm_source=github.com&utm_medium=referral&utm_content=Bullrich/Unity-Console&utm_campaign=badger)
