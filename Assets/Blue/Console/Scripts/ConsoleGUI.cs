@@ -43,7 +43,7 @@ namespace Blue.Console
             actionSection = actionButtons.actionsContainer.transform.parent.parent;
             ConsoleActions.listUpdated += AddListElement;
             GetComponent<ConsoleOutput>().init(this);
-            //new TestingConsole();
+            new TestingConsole();
             if (!Debug.isDebugBuild)
                 Debug.LogWarning("This isn't a development build! You won't be able to read the stack trace!");
         }

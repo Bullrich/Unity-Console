@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 // Mady by @Bullrich
 
@@ -24,6 +25,8 @@ namespace Blue.Console
 
         IEnumerator InitConsole()
         {
+            const string _eventSystemName = "EventSystem";
+            GameObject eventSystem = GameObject.Find(_eventSystemName);
             GameObject console = Instantiate(gameConsole);
             console.name = gameConsole.name;
             ConsoleGUI guiConsole = console.transform.GetChild(0).GetComponent<ConsoleGUI>();
@@ -34,6 +37,14 @@ namespace Blue.Console
             yield return new WaitForEndOfFrame();
             guiConsole.SwitchConsole();
             guiConsole.ToggleActions();
+            if (eventSystem == null)
+            {
+                GameObject _eventSystem = new GameObject(_eventSystemName);
+                _eventSystem.AddComponent<EventSystem>();
+                _eventSystem.AddComponent<StandaloneInputModule>();
+                _eventSystem.transform.position=Vector3.zero;
+                DontDestroyOnLoad(_eventSystem);
+            }
             Destroy(gameObject);
         }
     }
@@ -54,7 +65,7 @@ namespace Blue.Console
             up
 
         }
-        
+
         public swDirection swipeDirection = swDirection.down;
         [Range(1, 4)]
         public int fingersNeed = 2;
