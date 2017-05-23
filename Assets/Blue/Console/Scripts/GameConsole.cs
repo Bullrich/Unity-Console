@@ -7,7 +7,7 @@ using Blue.Console;
 
 namespace Blue
 {
-    public class ConsoleActions
+    public class GameConsole
     {
         public delegate void booleanAction(bool boolInput);
 
@@ -36,10 +36,11 @@ namespace Blue
                 getActions().Add(container);
             else
                 Debug.LogWarning(string.Format("Action {0} has already being added!", container.actionName));
+
             listUpdated(getActions());
         }
 
-        public static void AddAction(booleanAction action, string actionName, bool defaultBooleanState)
+        public static void AddAction(booleanAction action, string actionName, bool defaultBooleanState = false)
         {
             ActionContainer acon = new ActionContainer(ActionContainer.ActionType._bool, action, actionName);
             acon.boolStartStatus = defaultBooleanState;
@@ -51,14 +52,14 @@ namespace Blue
             AddActionToList(new ActionContainer(ActionContainer.ActionType._void, action, actionName));
         }
 
-        public static void AddAction(floatAction action, string actionName, float defaultFloatValue)
+        public static void AddAction(floatAction action, string actionName, float defaultFloatValue = 0f)
         {
             ActionContainer acon = new ActionContainer(ActionContainer.ActionType._float, action, actionName);
             acon.floatDefaultValue = defaultFloatValue;
             AddActionToList(acon);
         }
 
-        public static void AddAction(intAction action, string actionName, int defaultIntValue)
+        public static void AddAction(intAction action, string actionName, int defaultIntValue = 0)
         {
             ActionContainer acon = new ActionContainer(ActionContainer.ActionType._int, action, actionName);
             acon.intDefaultValue = defaultIntValue;

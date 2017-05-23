@@ -41,16 +41,18 @@ namespace Blue.Console
             CleanConsole();
             logSection = logScroll.transform.parent;
             actionSection = actionButtons.actionsContainer.transform.parent.parent;
-            ConsoleActions.listUpdated += AddListElement;
+            GameConsole.listUpdated += AddListElement;
             GetComponent<ConsoleOutput>().init(this);
-            new TestingConsole();
+
+            new TestingConsole(); // ------------------------------------
+
             if (!Debug.isDebugBuild)
                 Debug.LogWarning("This isn't a development build! You won't be able to read the stack trace!");
         }
 
         void SetActions()
         {
-            List<ActionContainer> actions = new List<ActionContainer>(ConsoleActions.getActions());
+            List<ActionContainer> actions = new List<ActionContainer>(GameConsole.getActions());
             foreach (ActionContainer acon in actions)
             {
                 AddActionElement(acon);
@@ -220,12 +222,15 @@ namespace Blue.Console
             private void AddActions()
             {
                 Debug.Log(Debug.isDebugBuild);
-                ConsoleActions.AddAction(Ble, "ACTION", 3);
-                ConsoleActions.AddAction(Bla, "This is a bool", false);
-                ConsoleActions.AddAction(Blu, "Print in console");
-                ConsoleActions.AddAction(error, "Print an error");
-                ConsoleActions.AddAction(warning, "Print a warning");
-                ConsoleActions.AddAction(SeveralErrors, "Throw several errors!");
+                Debug.Log("Adding methods!");
+                GameConsole.AddAction(Ble, "ACTION", 3);
+                GameConsole.AddAction(Bla, "This is a bool");
+                GameConsole.AddAction(Blu, "Print in console");
+                GameConsole.AddAction(error, "Print an error");
+                GameConsole.AddAction(error, "Print an error");
+                GameConsole.AddAction(error, "Print an error");
+                GameConsole.AddAction(warning, "Print a warning");
+                GameConsole.AddAction(SeveralErrors, "Throw several errors!");
             }
 
             void Ble(int ja)

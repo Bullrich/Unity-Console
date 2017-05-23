@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 // Mady by @Bullrich
 
@@ -32,6 +33,11 @@ namespace Blue.Console
             ConsoleGUI guiConsole = console.transform.GetChild(0).GetComponent<ConsoleGUI>();
             guiConsole.init(swipeOptions);
             guiConsole.ToggleActions();
+            if (Screen.width > Screen.height)
+            {
+                CanvasScaler scaler = console.GetComponent<CanvasScaler>();
+                scaler.referenceResolution = new Vector2(1800, 600);
+            }
 
             DontDestroyOnLoad(console);
             yield return new WaitForEndOfFrame();
@@ -42,7 +48,7 @@ namespace Blue.Console
                 GameObject _eventSystem = new GameObject(_eventSystemName);
                 _eventSystem.AddComponent<EventSystem>();
                 _eventSystem.AddComponent<StandaloneInputModule>();
-                _eventSystem.transform.position=Vector3.zero;
+                _eventSystem.transform.position = Vector3.zero;
                 DontDestroyOnLoad(_eventSystem);
             }
             Destroy(gameObject);
@@ -53,17 +59,14 @@ namespace Blue.Console
     public class SwipeManager
     {
 
-        Vector2 firstPressPos;
-        Vector2 secondPressPos;
-        Vector2 currentSwipe;
+        Vector2
+            firstPressPos,
+            secondPressPos,
+            currentSwipe;
 
         public enum swDirection
         {
-            left,
-            right,
-            down,
-            up
-
+            left, right, down, up
         }
 
         public swDirection swipeDirection = swDirection.down;
