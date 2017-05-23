@@ -270,6 +270,9 @@ namespace Blue.Console
                         case 2:
                             Debug.LogError(i + " | This is an assets known as a kind of error!");
                             break;
+                        default:
+                            Debug.LogError(i + " = i, this shouldn't happen");
+                            break;
                     }
                 }
             }

@@ -11,7 +11,6 @@ namespace Blue.Console
     {
         // Action
         System.Delegate buttonAction;
-        InputField field;
 
         public override void Init(ActionContainer action)
         {
