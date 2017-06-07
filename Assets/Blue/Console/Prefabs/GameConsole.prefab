@@ -1998,8 +1998,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a6a004e1da4449a49ccca69bf85865a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  output: 
-  stack: 
 --- !u!114 &114479280810254030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2936,10 +2934,6 @@ MonoBehaviour:
     logErrorSprite: {fileID: 21300000, guid: ea30f85b443d49b42ab0d4b6824e08b6, type: 3}
     logWarningSprite: {fileID: 21300000, guid: b830192b1cdf35b4bb3ea3f7c93624de, type: 3}
     logInfoSprite: {fileID: 21300000, guid: e316daf38036f004e9f15023ca77b8cd, type: 3}
-  openConsoleSettings:
-    swipeDirection: 2
-    fingersNeed: 2
-    openConsoleKey: 9
   DefaultMailDirectory: example@gmail.com
 --- !u!114 &114812753058809256
 MonoBehaviour:

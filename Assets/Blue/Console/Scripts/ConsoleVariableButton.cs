@@ -20,6 +20,7 @@ namespace Blue.Console
         public override void Init(ActionContainer action)
         {
             SetVariableInputs();
+            actionName = action.actionName;
             SetAction(action);
         }
 

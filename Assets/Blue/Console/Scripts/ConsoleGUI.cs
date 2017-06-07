@@ -75,6 +75,11 @@ namespace Blue.Console
             guiManager.AddAction(spawnedBtn);
         }
 
+        private void RemoveActionElement(string elementName)
+        {
+
+        }
+
         void Update()
         {
             if (openConsoleSettings.didSwipe())
@@ -105,8 +110,26 @@ namespace Blue.Console
                     {
                         AddActionElement(actions[i]);
                     }
-                actionsList = new List<ActionContainer>(actions);
+                else if (newElements < 0)
+                {
+                    int _i = 0;
+                    foreach (ActionContainer action in actionsList)
+                    {
+                        if (action.actionName != actions[_i].actionName)
+                        {
+                            RemoveActionElement(action.actionName);
+                            guiManager.RemoveAction(action.actionName);
+                            break;
+                        }
+                        else if (_i + 1 > actions.Count - 1){
+                            print(action.actionName + " is the last one!");
+                            guiManager.RemoveAction(action.actionName);
+                        }
+                        _i++;
+                    }
+                }
             }
+            actionsList = new List<ActionContainer>(actions);
         }
 
         #region ButtonFunctions
@@ -185,6 +208,11 @@ namespace Blue.Console
             buttonSprite.color = buttonSprite.color == defaultColor ? Color.black : defaultColor;
         }
 
+        public void FilterByString(string _filterMessage)
+        {
+            guiManager.FilterList(_filterMessage);
+        }
+
         public void PauseConsole()
         {
             guiManager.PauseList();
@@ -227,6 +255,7 @@ namespace Blue.Console
                 GameConsole.AddAction(Bla, "This is a bool");
                 GameConsole.AddAction(Blu, "Print in console");
                 GameConsole.AddAction(error, "Print an error");
+                GameConsole.AddAction(DeleteAll, "Delete all!");
                 GameConsole.AddAction(error, "Print an error");
                 GameConsole.AddAction(error, "Print an error");
                 GameConsole.AddAction(warning, "Print a warning");
@@ -236,6 +265,15 @@ namespace Blue.Console
             void Ble(int ja)
             {
                 Debug.Log(ja + " HOLAAAA");
+                GameConsole.RemoveAction("ACTION");
+            }
+
+            private void DeleteAll(){
+                GameConsole.RemoveAction("ACTION");
+                GameConsole.RemoveAction("This is a bool");
+                GameConsole.RemoveAction("Print in console");
+                GameConsole.RemoveAction("Print an error");
+                GameConsole.RemoveAction("Throw several errors!");
             }
 
             void Bla(bool lol)

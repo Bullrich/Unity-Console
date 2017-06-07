@@ -48,6 +48,16 @@ namespace Blue.Console
             actionButtons.Add(button);
         }
 
+        public void RemoveAction(string _actionName){
+            foreach(ActionButtonBehavior _actionButton in actionButtons){
+                if(_actionButton.GetActionName() == _actionName){
+                    MonoBehaviour.Destroy(_actionButton.gameObject, 0.1f);
+                    actionButtons.Remove(_actionButton);
+                    break;
+                }
+            }
+        }
+
         public void ClearList()
         {
             logsList.Clear();
@@ -82,6 +92,17 @@ namespace Blue.Console
                         log.gameObject.SetActive(isBlocked);
                     else
                         log.gameObject.SetActive(false);
+        }
+
+        public void FilterList(string _messageString)
+        {
+            if (_messageString == "" || _messageString == null)
+                return;
+            foreach (LogInfo log in logsList)
+            {
+                if (!log.logMessage.text.Contains(_messageString))
+                    log.gameObject.SetActive(false);
+            }
         }
 
         Sprite errorSprite(LogType logType)

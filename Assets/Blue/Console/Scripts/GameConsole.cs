@@ -10,11 +10,8 @@ namespace Blue
     public class GameConsole
     {
         public delegate void booleanAction(bool boolInput);
-
         public delegate void voidAction();
-
         public delegate void intAction(int intInput);
-
         public delegate void floatAction(float floatInput);
 
         private static List<ActionContainer> actions;
@@ -65,10 +62,28 @@ namespace Blue
             acon.intDefaultValue = defaultIntValue;
             AddActionToList(acon);
         }
+
+        public static void RemoveAction(string _actionName)
+        {
+            foreach (ActionContainer action in getActions())
+            {
+                if (action.actionName == _actionName)
+                {
+                    getActions().Remove(action);
+                    listUpdated(getActions());
+                    break;
+                }
+            }
+        }
     }
 
     public abstract class ActionButtonBehavior : MonoBehaviour
     {
+        protected string actionName = null;
         public abstract void Init(ActionContainer action);
+        public string GetActionName()
+        {
+            return actionName;
+        }
     }
 }
