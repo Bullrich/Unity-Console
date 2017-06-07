@@ -10,7 +10,7 @@ namespace Blue.Console
     public class ConsoleActionButton : ActionButtonBehavior
     {
         // Action
-        System.Delegate buttonAction;
+        private System.Delegate buttonAction;
 
         public override void Init(ActionContainer action)
         {

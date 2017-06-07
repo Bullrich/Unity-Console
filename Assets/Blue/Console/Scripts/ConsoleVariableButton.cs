@@ -12,10 +12,10 @@ namespace Blue.Console
 
         // Variable
         public Text variableText;
-        InputField field;
-        Toggle toggle;
-        System.Delegate variableAction;
-        bool isIntVariable;
+        private InputField field;
+        private Toggle toggle;
+        private System.Delegate variableAction;
+        private bool isIntVariable;
 
         public override void Init(ActionContainer action)
         {

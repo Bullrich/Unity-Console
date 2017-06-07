@@ -9,15 +9,15 @@ namespace Blue.Console
 {
     public class ConsoleGuiManager
     {
-        List<LogInfo>
-        logsList = new List<LogInfo>(),
-        pausedLogs = new List<LogInfo>();
-        List<LogType> blockedLogs = new List<LogType>();
-        List<ActionButtonBehavior> actionButtons = new List<ActionButtonBehavior>();
-        ScrollRect scrllRect;
-        Transform logContainer;
-        ConsoleGUI.LogDetails details;
-        bool listPaused;
+        private List<LogInfo>
+            logsList = new List<LogInfo>(),
+            pausedLogs = new List<LogInfo>();
+        private List<LogType> blockedLogs = new List<LogType>();
+        private List<ActionButtonBehavior> actionButtons = new List<ActionButtonBehavior>();
+        private ScrollRect scrllRect;
+        private Transform logContainer;
+        private ConsoleGUI.LogDetails details;
+        private bool listPaused;
 
         public ConsoleGuiManager(ScrollRect scrollRect, ConsoleGUI.LogDetails logDetails)
         {
@@ -48,9 +48,12 @@ namespace Blue.Console
             actionButtons.Add(button);
         }
 
-        public void RemoveAction(string _actionName){
-            foreach(ActionButtonBehavior _actionButton in actionButtons){
-                if(_actionButton.GetActionName() == _actionName){
+        public void RemoveAction(string _actionName)
+        {
+            foreach (ActionButtonBehavior _actionButton in actionButtons)
+            {
+                if (_actionButton.GetActionName() == _actionName)
+                {
                     MonoBehaviour.Destroy(_actionButton.gameObject, 0.1f);
                     actionButtons.Remove(_actionButton);
                     break;
@@ -96,16 +99,17 @@ namespace Blue.Console
 
         public void FilterList(string _messageString)
         {
+            bool _shouldBeShown = false;
             if (_messageString == "" || _messageString == null)
-                return;
+                _shouldBeShown = true;
             foreach (LogInfo log in logsList)
             {
                 if (!log.logMessage.text.Contains(_messageString))
-                    log.gameObject.SetActive(false);
+                    log.gameObject.SetActive(_shouldBeShown);
             }
         }
 
-        Sprite errorSprite(LogType logType)
+        private Sprite errorSprite(LogType logType)
         {
             Sprite logSprite = details.logErrorSprite;
             if (logType == LogType.Log)

@@ -16,7 +16,7 @@ namespace Blue.Console
             Application.logMessageReceived += HandleLog;
         }
 
-        void HandleLog(string logString, string stackTrace, LogType type)
+        private void HandleLog(string logString, string stackTrace, LogType type)
         {
             gui.LogMessage(type, stackTrace, logString);
         }

@@ -14,7 +14,7 @@ namespace Blue.Console
         [SerializeField]
         public SwipeManager swipeOptions;
 
-        void Awake()
+        private void Awake()
         {
             if (GameObject.Find(gameConsole.name) == null)
             {
@@ -24,7 +24,7 @@ namespace Blue.Console
                 Debug.LogWarning("Tried to spawn console, but it already exists!");
         }
 
-        IEnumerator InitConsole()
+        private IEnumerator InitConsole()
         {
             const string _eventSystemName = "EventSystem";
             GameObject eventSystem = GameObject.Find(_eventSystemName);

@@ -11,7 +11,7 @@ namespace Blue.Console
     {
         public Text logMessage;
         public Image logType;
-        ErrorDetail logDetail;
+        private ErrorDetail logDetail;
         [HideInInspector]
         public ConsoleGUI gui;
 

@@ -13,14 +13,14 @@ namespace Blue.Console
         [Tooltip("Prefab object")]
         public LogInfo logInfo;
         public Transform logScroll, popUpDetail;
-        Transform logSection, actionSection;
-        Text detailInformation;
+        private Transform logSection, actionSection;
+        private Text detailInformation;
         public ActionButtons actionButtons;
 
         public LogDetails logDetail;
-        ConsoleGuiManager guiManager;
+        private ConsoleGuiManager guiManager;
         private List<ActionContainer> actionsList;
-        SwipeManager openConsoleSettings;
+        private SwipeManager openConsoleSettings;
         private string mailSubject;
         public string DefaultMailDirectory = "example@gmail.com";
 
@@ -50,7 +50,7 @@ namespace Blue.Console
                 Debug.LogWarning("This isn't a development build! You won't be able to read the stack trace!");
         }
 
-        void SetActions()
+        private void SetActions()
         {
             List<ActionContainer> actions = new List<ActionContainer>(GameConsole.getActions());
             foreach (ActionContainer acon in actions)
@@ -75,12 +75,12 @@ namespace Blue.Console
             guiManager.AddAction(spawnedBtn);
         }
 
-        private void RemoveActionElement(string elementName)
+        private void RemoveActionElement(string _elementName)
         {
-
+            guiManager.RemoveAction(_elementName);
         }
 
-        void Update()
+        private void Update()
         {
             if (openConsoleSettings.didSwipe())
                 SwitchConsole();
@@ -118,12 +118,12 @@ namespace Blue.Console
                         if (action.actionName != actions[_i].actionName)
                         {
                             RemoveActionElement(action.actionName);
-                            guiManager.RemoveAction(action.actionName);
                             break;
                         }
-                        else if (_i + 1 > actions.Count - 1){
+                        else if (_i + 1 > actions.Count - 1)
+                        {
                             print(action.actionName + " is the last one!");
-                            guiManager.RemoveAction(action.actionName);
+                            RemoveActionElement(action.actionName);
                         }
                         _i++;
                     }
@@ -168,14 +168,14 @@ namespace Blue.Console
             ShareTextOnAndroid(Application.productName, textToSend);
 #endif
         }
-        void SendEmail(string messageBody)
+        private void SendEmail(string messageBody)
         {
             string email = DefaultMailDirectory;
             string subject = MyEscapeURL(mailSubject);
             string body = MyEscapeURL(messageBody);
             Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
         }
-        string MyEscapeURL(string url)
+        private string MyEscapeURL(string url)
         {
             return WWW.EscapeURL(url).Replace("+", "%20");
         }
@@ -262,13 +262,14 @@ namespace Blue.Console
                 GameConsole.AddAction(SeveralErrors, "Throw several errors!");
             }
 
-            void Ble(int ja)
+            private void Ble(int ja)
             {
                 Debug.Log(ja + " HOLAAAA");
                 GameConsole.RemoveAction("ACTION");
             }
 
-            private void DeleteAll(){
+            private void DeleteAll()
+            {
                 GameConsole.RemoveAction("ACTION");
                 GameConsole.RemoveAction("This is a bool");
                 GameConsole.RemoveAction("Print in console");
@@ -276,27 +277,27 @@ namespace Blue.Console
                 GameConsole.RemoveAction("Throw several errors!");
             }
 
-            void Bla(bool lol)
+            private void Bla(bool lol)
             {
                 Debug.Log("Value is " + lol);
             }
 
-            void Blu()
+            private void Blu()
             {
                 Debug.Log("This print in console");
             }
 
-            void error()
+            private void error()
             {
                 Debug.LogError("This is an exception!");
             }
 
-            void warning()
+            private void warning()
             {
                 Debug.LogWarning("This is a warning");
             }
 
-            void SeveralErrors()
+            private void SeveralErrors()
             {
                 int randomValues = Random.Range(3, 14);
                 for (int i = 0; i < randomValues; i++)
