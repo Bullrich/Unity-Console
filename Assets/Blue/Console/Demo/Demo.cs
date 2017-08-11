@@ -25,6 +25,7 @@ namespace Blue.Console.Demo
             GameConsole.AddAction(error, "Print an error");
             GameConsole.AddAction(warning, "Print a warning");
             GameConsole.AddAction(SeveralErrors, "Throw several errors!");
+            GameConsole.AddAction(CustomMessage, "Write a custom message");
         }
 
         private void Update()
@@ -69,6 +70,11 @@ namespace Blue.Console.Demo
         private void warning()
         {
             Debug.LogWarning("This is a warning");
+        }
+
+        private void CustomMessage()
+        {
+            GameConsole.WriteMessage("Example custom title", "Here goes a custom message");
         }
 
         private void SeveralErrors()

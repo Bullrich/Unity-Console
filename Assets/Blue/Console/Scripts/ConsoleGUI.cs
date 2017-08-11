@@ -43,6 +43,7 @@ namespace Blue.Console
             logSection = logScroll.transform.parent;
             actionSection = actionButtons.actionsContainer.transform.parent.parent;
             GameConsole.listUpdated += AddListElement;
+            GameConsole.consoleMessage += WriteToConsole;
             GetComponent<ConsoleOutput>().init(this);
             _minifiedConsole = minifyOnStart;
 
@@ -94,6 +95,11 @@ namespace Blue.Console
             child.SetActive(!child.activeSelf);
             if (_minifiedConsole)
                 popup.gameObject.SetActive(!backgroundImage.enabled);
+        }
+
+        private void WriteToConsole(string title, string message)
+        {
+            LogMessage(LogType.Log, message, title);
         }
 
         private void AddListElement(List<ActionContainer> actions)

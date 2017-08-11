@@ -22,6 +22,10 @@ namespace Blue
 
         public static event ListUpdated listUpdated;
 
+        public delegate void ConsoleMessage(string title, string message);
+
+        public static event ConsoleMessage consoleMessage;
+
         public static List<ActionContainer> getActions()
         {
             if (actions == null)
@@ -63,6 +67,11 @@ namespace Blue
             ActionContainer acon = new ActionContainer(ActionContainer.ActionType._int, action, actionName);
             acon.intDefaultValue = defaultIntValue;
             AddActionToList(acon);
+        }
+
+        public static void WriteMessage(string title, string message)
+        {
+            consoleMessage(title, message);
         }
 
         public static void RemoveAction(string _actionName)
