@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,8 +11,8 @@ namespace Blue.Console
     public class LoadGameConsole : MonoBehaviour
     {
         public GameObject gameConsole;
-        [SerializeField]
-        public SwipeManager swipeOptions;
+        [SerializeField] public SwipeManager swipeOptions;
+        [SerializeField] private bool startMinified = false;
 
         private void Awake()
         {
@@ -31,7 +31,7 @@ namespace Blue.Console
             GameObject console = Instantiate(gameConsole);
             console.name = gameConsole.name;
             ConsoleGUI guiConsole = console.transform.GetChild(0).GetComponent<ConsoleGUI>();
-            guiConsole.init(swipeOptions);
+            guiConsole.init(swipeOptions, startMinified);
             guiConsole.ToggleActions();
             if (Screen.width > Screen.height)
             {
@@ -51,14 +51,16 @@ namespace Blue.Console
                 _eventSystem.transform.position = Vector3.zero;
                 DontDestroyOnLoad(_eventSystem);
             }
+            GameConsole.AddAction(guiConsole.MinifiedConsole, "Show minified console", startMinified);
+            if (startMinified)
+                guiConsole.popup.gameObject.SetActive(startMinified);
             Destroy(gameObject);
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class SwipeManager
     {
-
         Vector2
             firstPressPos,
             secondPressPos,
@@ -66,12 +68,14 @@ namespace Blue.Console
 
         public enum swDirection
         {
-            left, right, down, up
+            left,
+            right,
+            down,
+            up
         }
 
         public swDirection swipeDirection = swDirection.down;
-        [Range(1, 4)]
-        public int fingersNeed = 2;
+        [Range(1, 4)] public int fingersNeed = 2;
 
         public KeyCode openConsoleKey = KeyCode.Tab;
 
@@ -89,42 +93,57 @@ namespace Blue.Console
 
 #if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
 
-            public bool SwipedInDirection()
+        public bool SwipedInDirection()
+        {
+            if (Input.touches.Length > fingersNeed - 1)
             {
-                if (Input.touches.Length > fingersNeed - 1) {
-                    Touch t = Input.GetTouch (0);
-                    if (t.phase == TouchPhase.Began) {
-                        //save began touch 2d point
-                        firstPressPos = new Vector2 (t.position.x, t.position.y);
+                Touch t = Input.GetTouch(0);
+                if (t.phase == TouchPhase.Began)
+                {
+                    //save began touch 2d point
+                    firstPressPos = new Vector2(t.position.x, t.position.y);
+                }
+                if (t.phase == TouchPhase.Ended)
+                {
+                    //save ended touch 2d point
+                    secondPressPos = new Vector2(t.position.x, t.position.y);
+
+                    //create vector from the two points
+                    currentSwipe =
+                        new Vector3(secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
+
+                    //normalize the 2d vector
+                    currentSwipe.Normalize();
+
+                    //swipe upwards
+                    if (swipeDirection == swDirection.up && currentSwipe.y > 0 && currentSwipe.x > -0.5f &&
+                        currentSwipe.x < 0.5f)
+                    {
+                        return true;
+                        //Debug.Log("up swipe");
                     }
-                    if (t.phase == TouchPhase.Ended) {
-                        //save ended touch 2d point
-                        secondPressPos = new Vector2 (t.position.x, t.position.y);
-
-                        //create vector from the two points
-                        currentSwipe = new Vector3 (secondPressPos.x - firstPressPos.x, secondPressPos.y - firstPressPos.y);
-
-                        //normalize the 2d vector
-                        currentSwipe.Normalize ();
-
-                        //swipe upwards
-                        if (swipeDirection == swDirection.up && currentSwipe.y > 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f) {
-                            return true;
-                            //Debug.Log("up swipe");
-                        } else if (swipeDirection == swDirection.down && currentSwipe.y < 0 && currentSwipe.x > -0.5f && currentSwipe.x < 0.5f) {
-                                //Debug.Log("down swipe");
-                                return true;
-                            } else if (swipeDirection == swDirection.left && currentSwipe.x < 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f) {
-                                    return true;
-                                    //Debug.Log("left swipe");
-                                } else if (swipeDirection == swDirection.right && currentSwipe.x > 0 && currentSwipe.y > -0.5f && currentSwipe.y < 0.5f) {
-                                        return true;
-                                        //Debug.Log("right swipe");
-                                    }
+                    else if (swipeDirection == swDirection.down && currentSwipe.y < 0 && currentSwipe.x > -0.5f &&
+                             currentSwipe.x < 0.5f)
+                    {
+                        //Debug.Log("down swipe");
+                        return true;
+                    }
+                    else if (swipeDirection == swDirection.left && currentSwipe.x < 0 && currentSwipe.y > -0.5f &&
+                             currentSwipe.y < 0.5f)
+                    {
+                        return true;
+                        //Debug.Log("left swipe");
+                    }
+                    else if (swipeDirection == swDirection.right && currentSwipe.x > 0 && currentSwipe.y > -0.5f &&
+                             currentSwipe.y < 0.5f)
+                    {
+                        return true;
+                        //Debug.Log("right swipe");
                     }
                 }
-                return false;
             }
+            return false;
+        }
 #endif
     }
 }

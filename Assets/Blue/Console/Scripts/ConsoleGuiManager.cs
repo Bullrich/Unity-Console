@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,18 +12,21 @@ namespace Blue.Console
         private List<LogInfo>
             logsList = new List<LogInfo>(),
             pausedLogs = new List<LogInfo>();
+
         private List<LogType> blockedLogs = new List<LogType>();
         private List<ActionButtonBehavior> actionButtons = new List<ActionButtonBehavior>();
         private ScrollRect scrllRect;
         private Transform logContainer;
         private ConsoleGUI.LogDetails details;
         private bool listPaused;
+        private ConsolePopup popup;
 
-        public ConsoleGuiManager(ScrollRect scrollRect, ConsoleGUI.LogDetails logDetails)
+        public ConsoleGuiManager(ScrollRect scrollRect, ConsoleGUI.LogDetails logDetails, ConsolePopup _popup)
         {
             scrllRect = scrollRect;
             details = logDetails;
             logContainer = scrllRect.transform.GetChild(0);
+            popup = _popup;
         }
 
         public void LogMessage(LogType type, string stackTrace, string logMessage, LogInfo newLog)
@@ -40,6 +43,12 @@ namespace Blue.Console
                 newLog.gameObject.SetActive(false);
             else if (!Input.GetMouseButton(0))
                 scrllRect.velocity = new Vector2(scrllRect.velocity.x, 1000f);
+            popup.UpdateLogs(getLogs());
+        }
+
+        public LogInfo[] getLogs()
+        {
+            return logsList.ToArray();
         }
 
         public void AddAction(ActionButtonBehavior button)
@@ -64,7 +73,8 @@ namespace Blue.Console
         public void ClearList()
         {
             logsList.Clear();
-            System.GC.Collect();
+            popup.CleanLogs();
+            GC.Collect();
         }
 
         public void PauseList()
@@ -99,13 +109,13 @@ namespace Blue.Console
 
         public void FilterList(string _messageString)
         {
-            bool _shouldBeShown = false;
+            bool shouldBeShown = false;
             if (_messageString == "" || _messageString == null)
-                _shouldBeShown = true;
+                shouldBeShown = true;
             foreach (LogInfo log in logsList)
             {
                 if (!log.logMessage.text.Contains(_messageString))
-                    log.gameObject.SetActive(_shouldBeShown);
+                    log.gameObject.SetActive(shouldBeShown);
             }
         }
 

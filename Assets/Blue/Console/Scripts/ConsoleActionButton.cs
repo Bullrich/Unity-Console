@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 using UnityEngine.UI;
 
 // by @Bullrich
@@ -10,7 +8,7 @@ namespace Blue.Console
     public class ConsoleActionButton : ActionButtonBehavior
     {
         // Action
-        private System.Delegate buttonAction;
+        private Delegate buttonAction;
 
         public override void Init(ActionContainer action)
         {

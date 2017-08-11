@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 // Mady by @Bullrich
@@ -12,8 +10,7 @@ namespace Blue.Console
         public Text logMessage;
         public Image logType;
         private ErrorDetail logDetail;
-        [HideInInspector]
-        public ConsoleGUI gui;
+        [HideInInspector] public ConsoleGUI gui;
 
         public void LoadLog(ErrorDetail eDetail)
         {
@@ -21,6 +18,11 @@ namespace Blue.Console
 
             PopulateLog(eDetail.logSprite, eDetail.logString);
             logType.color = colorOfLog(eDetail.errorType);
+        }
+
+        public LogType GetLogType()
+        {
+            return logDetail.errorType;
         }
 
         private Color colorOfLog(LogType type)
@@ -56,7 +58,6 @@ namespace Blue.Console
 
         public struct ErrorDetail
         {
-
             public ErrorDetail(
                 string log,
                 string stack,
@@ -70,7 +71,8 @@ namespace Blue.Console
             }
 
             public string logString,
-                 stackTrace;
+                stackTrace;
+
             public LogType errorType;
             public Sprite logSprite;
         }

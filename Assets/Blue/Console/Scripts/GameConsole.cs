@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using Blue.Console;
+using UnityEngine;
 
 // Mady by @Bullrich
 
@@ -10,8 +9,11 @@ namespace Blue
     public class GameConsole
     {
         public delegate void booleanAction(bool boolInput);
+
         public delegate void voidAction();
+
         public delegate void intAction(int intInput);
+
         public delegate void floatAction(float floatInput);
 
         private static List<ActionContainer> actions;
@@ -81,6 +83,7 @@ namespace Blue
     {
         protected string actionName = null;
         public abstract void Init(ActionContainer action);
+
         public string GetActionName()
         {
             return actionName;
