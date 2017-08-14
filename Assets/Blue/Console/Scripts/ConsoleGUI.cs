@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,19 +10,20 @@ namespace Blue.Console
     [RequireComponent(typeof(ConsoleOutput))]
     public class ConsoleGUI : MonoBehaviour
     {
-        [Tooltip("Prefab object")]
-        public LogInfo logInfo;
+        [Tooltip("Prefab object")] public LogInfo logInfo;
         public Transform logScroll, popUpDetail;
-        Transform logSection, actionSection;
-        Text detailInformation;
+        private Transform logSection, actionSection;
+        private Text detailInformation;
+        public ConsolePopup popup;
         public ActionButtons actionButtons;
 
         public LogDetails logDetail;
-        ConsoleGuiManager guiManager;
+        private ConsoleGuiManager guiManager;
         private List<ActionContainer> actionsList;
-        SwipeManager openConsoleSettings;
+        private SwipeManager openConsoleSettings;
         private string mailSubject;
         public string DefaultMailDirectory = "example@gmail.com";
+        private bool _minifiedConsole;
 
         public void LogMessage(LogType type, string stackTrace, string logMessage)
         {
@@ -32,25 +33,27 @@ namespace Blue.Console
                 stackTrace, logMessage, info);
         }
 
-        public void init(SwipeManager swipe)
+        public void init(SwipeManager swipe, bool minifyOnStart, int logLimit)
         {
             openConsoleSettings = swipe;
             guiManager = new ConsoleGuiManager(
-                logScroll.transform.parent.GetComponent<ScrollRect>(), logDetail);
+                logScroll.transform.parent.GetComponent<ScrollRect>(), logDetail, popup, logLimit);
             detailInformation = popUpDetail.GetChild(0).GetChild(0).GetComponent<Text>();
             CleanConsole();
             logSection = logScroll.transform.parent;
             actionSection = actionButtons.actionsContainer.transform.parent.parent;
-            ConsoleActions.listUpdated += AddListElement;
+            GameConsole.listUpdated += AddListElement;
+            GameConsole.consoleMessage += WriteToConsole;
             GetComponent<ConsoleOutput>().init(this);
-            //new TestingConsole();
+            _minifiedConsole = minifyOnStart;
+
             if (!Debug.isDebugBuild)
                 Debug.LogWarning("This isn't a development build! You won't be able to read the stack trace!");
         }
 
-        void SetActions()
+        private void SetActions()
         {
-            List<ActionContainer> actions = new List<ActionContainer>(ConsoleActions.getActions());
+            List<ActionContainer> actions = new List<ActionContainer>(GameConsole.getActions());
             foreach (ActionContainer acon in actions)
             {
                 AddActionElement(acon);
@@ -73,7 +76,12 @@ namespace Blue.Console
             guiManager.AddAction(spawnedBtn);
         }
 
-        void Update()
+        private void RemoveActionElement(string _elementName)
+        {
+            guiManager.RemoveAction(_elementName);
+        }
+
+        private void Update()
         {
             if (openConsoleSettings.didSwipe())
                 SwitchConsole();
@@ -85,6 +93,13 @@ namespace Blue.Console
             backgroundImage.enabled = !backgroundImage.enabled;
             GameObject child = transform.GetChild(0).gameObject;
             child.SetActive(!child.activeSelf);
+            if (_minifiedConsole)
+                popup.gameObject.SetActive(!backgroundImage.enabled);
+        }
+
+        private void WriteToConsole(string title, string message)
+        {
+            LogMessage(LogType.Log, message, title);
         }
 
         private void AddListElement(List<ActionContainer> actions)
@@ -103,8 +118,26 @@ namespace Blue.Console
                     {
                         AddActionElement(actions[i]);
                     }
-                actionsList = new List<ActionContainer>(actions);
+                else if (newElements < 0)
+                {
+                    int _i = 0;
+                    foreach (ActionContainer action in actionsList)
+                    {
+                        if (action.actionName != actions[_i].actionName)
+                        {
+                            RemoveActionElement(action.actionName);
+                            break;
+                        }
+                        else if (_i + 1 > actions.Count - 1)
+                        {
+                            print(action.actionName + " is the last one!");
+                            RemoveActionElement(action.actionName);
+                        }
+                        _i++;
+                    }
+                }
             }
+            actionsList = new List<ActionContainer>(actions);
         }
 
         #region ButtonFunctions
@@ -134,6 +167,11 @@ namespace Blue.Console
             popUpDetail.gameObject.SetActive(false);
         }
 
+        public void MinifiedConsole(bool minifiedStatus)
+        {
+            _minifiedConsole = minifiedStatus;
+        }
+
         public void CopyTextToClipboard()
         {
             string textToSend = detailInformation.text;
@@ -143,27 +181,30 @@ namespace Blue.Console
             ShareTextOnAndroid(Application.productName, textToSend);
 #endif
         }
-        void SendEmail(string messageBody)
+
+        private void SendEmail(string messageBody)
         {
             string email = DefaultMailDirectory;
             string subject = MyEscapeURL(mailSubject);
             string body = MyEscapeURL(messageBody);
             Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
         }
-        string MyEscapeURL(string url)
+
+        private string MyEscapeURL(string url)
         {
             return WWW.EscapeURL(url).Replace("+", "%20");
         }
 
 #if UNITY_ANDROID
-        [System.Obsolete("Deprecated because SendEmail works better and it's multiplatform")]
+        [Obsolete("Deprecated because SendEmail works better and it's multiplatform")]
         private void ShareTextOnAndroid(string messageTitle, string messageBody)
         {
             AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
             AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
             intentObject.Call<AndroidJavaObject>("setAction", intentClass.GetStatic<string>("ACTION_SEND"));
             intentObject.Call<AndroidJavaObject>("setType", "text/plain");
-            intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_SUBJECT"), messageTitle);
+            intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_SUBJECT"),
+                messageTitle);
             intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_TEXT"), messageBody);
             AndroidJavaClass unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity");
@@ -183,6 +224,11 @@ namespace Blue.Console
             buttonSprite.color = buttonSprite.color == defaultColor ? Color.black : defaultColor;
         }
 
+        public void FilterByString(string _filterMessage)
+        {
+            guiManager.FilterList(_filterMessage);
+        }
+
         public void PauseConsole()
         {
             guiManager.PauseList();
@@ -190,89 +236,22 @@ namespace Blue.Console
 
         #endregion
 
-        [System.Serializable]
+        [Serializable]
         public class ActionButtons
         {
-            [Header("Actions")]
-            public VerticalLayoutGroup actionsContainer;
+            [Header("Actions")] public VerticalLayoutGroup actionsContainer;
             public ActionButtonBehavior actionBtnPrefab;
-            [Header("Variables")]
-            public VerticalLayoutGroup variablesContainer;
+            [Header("Variables")] public VerticalLayoutGroup variablesContainer;
             public ActionButtonBehavior variablesBtnPrefab;
         }
 
-        [System.Serializable]
+        [Serializable]
         public class LogDetails
         {
             public Sprite
                 logErrorSprite,
                 logWarningSprite,
                 logInfoSprite;
-        }
-
-        private class TestingConsole
-        {
-            public TestingConsole()
-            {
-                AddActions();
-            }
-
-            private void AddActions()
-            {
-                Debug.Log(Debug.isDebugBuild);
-                ConsoleActions.AddAction(Ble, "ACTION", 3);
-                ConsoleActions.AddAction(Bla, "This is a bool", false);
-                ConsoleActions.AddAction(Blu, "Print in console");
-                ConsoleActions.AddAction(error, "Print an error");
-                ConsoleActions.AddAction(warning, "Print a warning");
-                ConsoleActions.AddAction(SeveralErrors, "Throw several errors!");
-            }
-
-            void Ble(int ja)
-            {
-                Debug.Log(ja + " HOLAAAA");
-            }
-
-            void Bla(bool lol)
-            {
-                Debug.Log("Value is " + lol);
-            }
-
-            void Blu()
-            {
-                Debug.Log("This print in console");
-            }
-
-            void error()
-            {
-                Debug.LogError("This is an exception!");
-            }
-
-            void warning()
-            {
-                Debug.LogWarning("This is a warning");
-            }
-
-            void SeveralErrors()
-            {
-                int randomValues = Random.Range(3, 14);
-                for (int i = 0; i < randomValues; i++)
-                {
-                    int newRand = Random.Range(0, 3);
-                    switch (newRand)
-                    {
-                        case 0:
-                            Debug.Log("This is " + i + " a log!");
-                            break;
-                        case 1:
-                            Debug.LogWarning("This is " + i + " warning!");
-                            break;
-                        case 2:
-                            Debug.LogError(i + " | This is an assets known as a kind of error!");
-                            break;
-                    }
-                }
-            }
         }
     }
 }

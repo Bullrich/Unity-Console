@@ -53,3 +53,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameConsole: {fileID: 1922871474741222, guid: 0b42c34f9f07a437f93580a76e44ef9e,
     type: 2}
+  swipeOptions:
+    swipeDirection: 2
+    fingersNeed: 2
+    openConsoleKey: 9
+  startMinified: 0

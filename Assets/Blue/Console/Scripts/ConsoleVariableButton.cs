@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,17 +8,18 @@ namespace Blue.Console
 {
     public class ConsoleVariableButton : ActionButtonBehavior
     {
-
         // Variable
         public Text variableText;
-        InputField field;
-        Toggle toggle;
-        System.Delegate variableAction;
-        bool isIntVariable;
+
+        private InputField field;
+        private Toggle toggle;
+        private Delegate variableAction;
+        private bool isIntVariable;
 
         public override void Init(ActionContainer action)
         {
             SetVariableInputs();
+            actionName = action.actionName;
             SetAction(action);
         }
 

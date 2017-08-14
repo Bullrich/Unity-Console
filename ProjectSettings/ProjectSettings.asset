@@ -205,7 +205,13 @@ PlayerSettings:
     banner: {fileID: 0}
   androidGamepadSupportLevel: 0
   resolutionDialogBanner: {fileID: 0}
-  m_BuildTargetIcons: []
+  m_BuildTargetIcons:
+  - m_BuildTarget: 
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 3689eaba08eca1e45967c69b87072f0f, type: 3}
+      m_Width: 128
+      m_Height: 128
   m_BuildTargetBatching: []
   m_BuildTargetGraphicsAPIs: []
   m_BuildTargetVRSettings: []
@@ -452,8 +458,13 @@ PlayerSettings:
   XboxOneAllowedProductIds: []
   XboxOnePersistentLocalStorageSize: 0
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
-  cloudProjectId: 
-  projectName: 
-  organizationId: 
+  cloudServicesEnabled:
+    Build: 1
+    Collab: 0
+    ErrorHub: 0
+    Hub: 0
+    UNet: 1
+  cloudProjectId: 8829bc00-3b46-4529-a266-860dde83266e
+  projectName: Console
+  organizationId: javier-bullrich
   cloudEnabled: 0

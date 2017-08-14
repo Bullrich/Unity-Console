@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 
 // Mady by @Bullrich
 
@@ -17,14 +15,14 @@ namespace Blue.Console
         }
 
         public ActionType actType;
-        public System.Delegate action;
+        public Delegate action;
         public string actionName;
 
         public bool boolStartStatus;
         public int intDefaultValue;
         public float floatDefaultValue;
 
-        public ActionContainer(ActionType type, System.Delegate delegateAction, string _actionName)
+        public ActionContainer(ActionType type, Delegate delegateAction, string _actionName)
         {
             actType = type;
             action = delegateAction;

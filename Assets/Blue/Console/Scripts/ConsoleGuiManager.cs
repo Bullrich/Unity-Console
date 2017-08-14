@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,21 +9,26 @@ namespace Blue.Console
 {
     public class ConsoleGuiManager
     {
-        List<LogInfo>
-        logsList = new List<LogInfo>(),
-        pausedLogs = new List<LogInfo>();
-        List<LogType> blockedLogs = new List<LogType>();
-        List<ActionButtonBehavior> actionButtons = new List<ActionButtonBehavior>();
-        ScrollRect scrllRect;
-        Transform logContainer;
-        ConsoleGUI.LogDetails details;
-        bool listPaused;
+        private List<LogInfo>
+            logsList = new List<LogInfo>(),
+            pausedLogs = new List<LogInfo>();
 
-        public ConsoleGuiManager(ScrollRect scrollRect, ConsoleGUI.LogDetails logDetails)
+        private List<LogType> blockedLogs = new List<LogType>();
+        private List<ActionButtonBehavior> actionButtons = new List<ActionButtonBehavior>();
+        private ScrollRect scrllRect;
+        private readonly int logLimit;
+        private Transform logContainer;
+        private ConsoleGUI.LogDetails details;
+        private bool listPaused;
+        private ConsolePopup popup;
+
+        public ConsoleGuiManager(ScrollRect scrollRect, ConsoleGUI.LogDetails logDetails, ConsolePopup _popup, int limit)
         {
             scrllRect = scrollRect;
             details = logDetails;
             logContainer = scrllRect.transform.GetChild(0);
+            popup = _popup;
+            logLimit = limit;
         }
 
         public void LogMessage(LogType type, string stackTrace, string logMessage, LogInfo newLog)
@@ -40,6 +45,20 @@ namespace Blue.Console
                 newLog.gameObject.SetActive(false);
             else if (!Input.GetMouseButton(0))
                 scrllRect.velocity = new Vector2(scrllRect.velocity.x, 1000f);
+            if(logsList.Count > logLimit)
+                DeleteLog(logsList[0]);
+            popup.UpdateLogs(getLogs());
+        }
+
+        private void DeleteLog(LogInfo log)
+        {
+            MonoBehaviour.Destroy(log.gameObject);
+            logsList.Remove(log);
+        }
+
+        public LogInfo[] getLogs()
+        {
+            return logsList.ToArray();
         }
 
         public void AddAction(ActionButtonBehavior button)
@@ -48,10 +67,29 @@ namespace Blue.Console
             actionButtons.Add(button);
         }
 
+        public void RemoveAction(string _actionName)
+        {
+            foreach (ActionButtonBehavior _actionButton in actionButtons)
+            {
+                if (_actionButton.GetActionName() == _actionName)
+                {
+                    MonoBehaviour.Destroy(_actionButton.gameObject, 0.1f);
+                    actionButtons.Remove(_actionButton);
+                    break;
+                }
+            }
+        }
+
+        public int LogsLength()
+        {
+            return logsList.Count;
+        }
+
         public void ClearList()
         {
             logsList.Clear();
-            System.GC.Collect();
+            popup.CleanLogs();
+            GC.Collect();
         }
 
         public void PauseList()
@@ -84,7 +122,19 @@ namespace Blue.Console
                         log.gameObject.SetActive(false);
         }
 
-        Sprite errorSprite(LogType logType)
+        public void FilterList(string _messageString)
+        {
+            bool shouldBeShown = false;
+            if (_messageString == "" || _messageString == null)
+                shouldBeShown = true;
+            foreach (LogInfo log in logsList)
+            {
+                if (!log.logMessage.text.Contains(_messageString))
+                    log.gameObject.SetActive(shouldBeShown);
+            }
+        }
+
+        private Sprite errorSprite(LogType logType)
         {
             Sprite logSprite = details.logErrorSprite;
             if (logType == LogType.Log)

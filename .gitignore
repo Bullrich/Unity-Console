@@ -28,3 +28,9 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+
+# VSCode
+/.vscode
+# Rider
+/.idea
+Assets/Plugins/Editor/JetBrains

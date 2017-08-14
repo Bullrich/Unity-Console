@@ -1,5 +1,5 @@
-﻿using UnityEngine.UI;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 // by @Bullrich
 
@@ -8,22 +8,22 @@ namespace Blue.Console
     public class ToggleIcon : MonoBehaviour
     {
         public Sprite toggleSprite;
-        Sprite originalSprite;
+        private Sprite originalSprite;
 
         public void ChangeSprite()
         {
-            Image imageContainer = GetComponent<Image>();
+            Image _imageContainer = GetComponent<Image>();
             if (originalSprite == null)
             {
-                originalSprite = imageContainer.sprite;
-                imageContainer.sprite = toggleSprite;
+                originalSprite = _imageContainer.sprite;
+                _imageContainer.sprite = toggleSprite;
             }
             else
             {
-                if (imageContainer.sprite == originalSprite)
-                    imageContainer.sprite = toggleSprite;
+                if (_imageContainer.sprite == originalSprite)
+                    _imageContainer.sprite = toggleSprite;
                 else
-                    imageContainer.sprite = originalSprite;
+                    _imageContainer.sprite = originalSprite;
             }
         }
     }
