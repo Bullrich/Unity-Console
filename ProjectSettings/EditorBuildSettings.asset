@@ -6,4 +6,4 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Blue/Console/ExampleScene.unity
+    path: Assets/Blue/Console/Demo/ExampleScene.unity
