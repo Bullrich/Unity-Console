@@ -16,17 +16,19 @@ namespace Blue.Console
         private List<LogType> blockedLogs = new List<LogType>();
         private List<ActionButtonBehavior> actionButtons = new List<ActionButtonBehavior>();
         private ScrollRect scrllRect;
+        private readonly int logLimit;
         private Transform logContainer;
         private ConsoleGUI.LogDetails details;
         private bool listPaused;
         private ConsolePopup popup;
 
-        public ConsoleGuiManager(ScrollRect scrollRect, ConsoleGUI.LogDetails logDetails, ConsolePopup _popup)
+        public ConsoleGuiManager(ScrollRect scrollRect, ConsoleGUI.LogDetails logDetails, ConsolePopup _popup, int limit)
         {
             scrllRect = scrollRect;
             details = logDetails;
             logContainer = scrllRect.transform.GetChild(0);
             popup = _popup;
+            logLimit = limit;
         }
 
         public void LogMessage(LogType type, string stackTrace, string logMessage, LogInfo newLog)
@@ -43,7 +45,15 @@ namespace Blue.Console
                 newLog.gameObject.SetActive(false);
             else if (!Input.GetMouseButton(0))
                 scrllRect.velocity = new Vector2(scrllRect.velocity.x, 1000f);
+            if(logsList.Count > logLimit)
+                DeleteLog(logsList[0]);
             popup.UpdateLogs(getLogs());
+        }
+
+        private void DeleteLog(LogInfo log)
+        {
+            MonoBehaviour.Destroy(log.gameObject);
+            logsList.Remove(log);
         }
 
         public LogInfo[] getLogs()
@@ -68,6 +78,11 @@ namespace Blue.Console
                     break;
                 }
             }
+        }
+
+        public int LogsLength()
+        {
+            return logsList.Count;
         }
 
         public void ClearList()

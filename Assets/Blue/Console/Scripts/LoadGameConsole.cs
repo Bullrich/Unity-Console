@@ -12,7 +12,10 @@ namespace Blue.Console
     {
         public GameObject gameConsole;
         [SerializeField] public SwipeManager swipeOptions;
+        [Tooltip("Show a minified version of the console on start")]
         [SerializeField] private bool startMinified = false;
+        [Tooltip("The maximium amount of logs the console can store")]
+        [SerializeField] private int limitOfLogs = 100;
 
         private void Awake()
         {
@@ -31,7 +34,7 @@ namespace Blue.Console
             GameObject console = Instantiate(gameConsole);
             console.name = gameConsole.name;
             ConsoleGUI guiConsole = console.transform.GetChild(0).GetComponent<ConsoleGUI>();
-            guiConsole.init(swipeOptions, startMinified);
+            guiConsole.init(swipeOptions, startMinified, limitOfLogs);
             guiConsole.ToggleActions();
             if (Screen.width > Screen.height)
             {

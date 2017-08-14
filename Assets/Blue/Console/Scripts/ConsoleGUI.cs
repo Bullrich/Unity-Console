@@ -33,11 +33,11 @@ namespace Blue.Console
                 stackTrace, logMessage, info);
         }
 
-        public void init(SwipeManager swipe, bool minifyOnStart)
+        public void init(SwipeManager swipe, bool minifyOnStart, int logLimit)
         {
             openConsoleSettings = swipe;
             guiManager = new ConsoleGuiManager(
-                logScroll.transform.parent.GetComponent<ScrollRect>(), logDetail, popup);
+                logScroll.transform.parent.GetComponent<ScrollRect>(), logDetail, popup, logLimit);
             detailInformation = popUpDetail.GetChild(0).GetChild(0).GetComponent<Text>();
             CleanConsole();
             logSection = logScroll.transform.parent;
