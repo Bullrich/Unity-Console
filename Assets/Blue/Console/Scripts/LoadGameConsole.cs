@@ -52,8 +52,7 @@ namespace Blue.Console
                 DontDestroyOnLoad(_eventSystem);
             }
             GameConsole.AddAction(guiConsole.MinifiedConsole, "Show minified console", startMinified);
-            if (startMinified)
-                guiConsole.popup.gameObject.SetActive(startMinified);
+            guiConsole.popup.gameObject.SetActive(startMinified);
             Destroy(gameObject);
         }
     }
