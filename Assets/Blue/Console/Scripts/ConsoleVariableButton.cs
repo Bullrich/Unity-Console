@@ -56,8 +56,6 @@ namespace Blue.Console
                     isIntVariable = false;
                     field.placeholder.GetComponent<Text>().text = action.floatDefaultValue.ToString();
                     break;
-                default:
-                    break;
             }
         }
 

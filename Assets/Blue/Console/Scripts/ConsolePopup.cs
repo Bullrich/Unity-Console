@@ -25,7 +25,7 @@ namespace Blue.Console
             }
         }
 
-        private int CountLogs(LogType _logType, LogInfo[] logs)
+        private static int CountLogs(LogType _logType, LogInfo[] logs)
         {
             int _countedLogs = 0;
             foreach (LogInfo log in logs)

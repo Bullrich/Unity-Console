@@ -17,7 +17,7 @@ namespace Blue.Console
             logDetail = eDetail;
 
             PopulateLog(eDetail.logSprite, eDetail.logString);
-            logType.color = colorOfLog(eDetail.errorType);
+            logType.color = ColorOfLog(eDetail.errorType);
         }
 
         public LogType GetLogType()
@@ -25,7 +25,7 @@ namespace Blue.Console
             return logDetail.errorType;
         }
 
-        private Color colorOfLog(LogType type)
+        private static Color ColorOfLog(LogType type)
         {
             Color logColor = Color.white;
             if (type == LogType.Assert || type == LogType.Error || type == LogType.Exception)

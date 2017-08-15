@@ -8,17 +8,17 @@ namespace Blue.Console
     public class ConsoleActionButton : ActionButtonBehavior
     {
         // Action
-        private Delegate buttonAction;
+        private Delegate _buttonAction;
 
         public override void Init(ActionContainer action)
         {
-            buttonAction = action.action;
+            _buttonAction = action.action;
             actionName = action.actionName;
             transform.GetChild(0).GetComponent<Text>().text = action.actionName;
         }
         public void ButtonAction()
         {
-            buttonAction.DynamicInvoke();
+            _buttonAction.DynamicInvoke();
         }
 
     }

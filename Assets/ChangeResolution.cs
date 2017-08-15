@@ -17,14 +17,14 @@ namespace Test
             public int height, width;
         }
 
-        private void Update()
+        public void Update()
         {
             if (!applyResolution) return;
-            updateResolution(resolutionIndex);
+            UpdateResolution(resolutionIndex);
             applyResolution = false;
         }
 
-        private void updateResolution(int index)
+        private void UpdateResolution(int index)
         {
             if (index > resolutions.Length - 1)
                 return;

@@ -17,7 +17,7 @@ namespace Blue.Console
         [Tooltip("The maximium amount of logs the console can store")]
         [SerializeField] private int limitOfLogs = 100;
 
-        private void Awake()
+        public void Awake()
         {
             if (GameObject.Find(gameConsole.name) == null)
             {

@@ -12,7 +12,7 @@ namespace Blue.Console.Demo
             AddActions();
         }
 
-        private void AddActions()
+        private static void AddActions()
         {
             Debug.Log(Debug.isDebugBuild);
             Debug.Log("Adding methods!");
@@ -28,7 +28,7 @@ namespace Blue.Console.Demo
             GameConsole.AddAction(CustomMessage, "Write a custom message");
         }
 
-        private void Update()
+        public void Update()
         {
             if (showLog)
             {
@@ -37,13 +37,13 @@ namespace Blue.Console.Demo
             }
         }
 
-        private void Ble(int ja)
+        private static void Ble(int ja)
         {
             Debug.Log(ja + " HOLAAAA");
             GameConsole.RemoveAction("ACTION");
         }
 
-        private void DeleteAll()
+        private static void DeleteAll()
         {
             GameConsole.RemoveAction("ACTION");
             GameConsole.RemoveAction("This is a bool");
@@ -52,32 +52,32 @@ namespace Blue.Console.Demo
             GameConsole.RemoveAction("Throw several errors!");
         }
 
-        private void Bla(bool lol)
+        private static void Bla(bool lol)
         {
             Debug.Log("Value is " + lol);
         }
 
-        private void Blu()
+        private static void Blu()
         {
             Debug.Log("This print in console");
         }
 
-        private void error()
+        private static void error()
         {
             Debug.LogError("This is an exception!");
         }
 
-        private void warning()
+        private static void warning()
         {
             Debug.LogWarning("This is a warning");
         }
 
-        private void CustomMessage()
+        private static void CustomMessage()
         {
             GameConsole.WriteMessage("Example custom title", "Here goes a custom message");
         }
 
-        private void SeveralErrors()
+        private static void SeveralErrors()
         {
             int randomValues = Random.Range(3, 14);
             for (int i = 0; i < randomValues; i++)

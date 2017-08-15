@@ -25,12 +25,12 @@ namespace Blue.Console
         public string DefaultMailDirectory = "example@gmail.com";
         private bool _minifiedConsole;
 
-        public void LogMessage(LogType type, string stackTrace, string logMessage)
+        public void LogMessage(LogType type, string stackTrace, string message)
         {
             LogInfo info = Instantiate(logInfo);
             info.gui = this;
             guiManager.LogMessage(type,
-                stackTrace, logMessage, info);
+                stackTrace, message, info);
         }
 
         public void init(SwipeManager swipe, bool minifyOnStart, int logLimit)
@@ -50,16 +50,6 @@ namespace Blue.Console
             if (!Debug.isDebugBuild)
                 Debug.LogWarning("This isn't a development build! You won't be able to read the stack trace!");
         }
-
-        private void SetActions()
-        {
-            List<ActionContainer> actions = new List<ActionContainer>(GameConsole.getActions());
-            foreach (ActionContainer acon in actions)
-            {
-                AddActionElement(acon);
-            }
-        }
-
 
         private void AddActionElement(ActionContainer acon)
         {
@@ -190,14 +180,14 @@ namespace Blue.Console
             Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
         }
 
-        private string MyEscapeURL(string url)
+        private static string MyEscapeURL(string url)
         {
             return WWW.EscapeURL(url).Replace("+", "%20");
         }
 
 #if UNITY_ANDROID
         [Obsolete("Deprecated because SendEmail works better and it's multiplatform")]
-        private void ShareTextOnAndroid(string messageTitle, string messageBody)
+        private static void ShareTextOnAndroid(string messageTitle, string messageBody)
         {
             AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
             AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
