@@ -10,16 +10,16 @@ namespace Blue.Console
 {
     public class LoadGameConsole : MonoBehaviour
     {
-        public GameObject gameConsole;
+        public ConsoleContainer gameConsole;
         [SerializeField] public SwipeManager swipeOptions;
         [Tooltip("Show a minified version of the console on start")]
-        [SerializeField] private bool startMinified = false;
+        public bool startMinified = false;
         [Tooltip("The maximium amount of logs the console can store")]
-        [SerializeField] private int limitOfLogs = 100;
+        public int limitOfLogs = 100;
 
         public void Awake()
         {
-            if (GameObject.Find(gameConsole.name) == null)
+            if (GameObject.Find(gameConsole.gameObject.name) == null)
             {
                 StartCoroutine(InitConsole());
             }
@@ -31,8 +31,8 @@ namespace Blue.Console
         {
             const string _eventSystemName = "EventSystem";
             GameObject eventSystem = GameObject.Find(_eventSystemName);
-            GameObject console = Instantiate(gameConsole);
-            console.name = gameConsole.name;
+            GameObject console = Instantiate(gameConsole.gameObject);
+            console.name = gameConsole.gameObject.name;
             ConsoleGUI guiConsole = console.transform.GetChild(0).GetComponent<ConsoleGUI>();
             guiConsole.init(swipeOptions, startMinified, limitOfLogs);
             guiConsole.ToggleActions();
