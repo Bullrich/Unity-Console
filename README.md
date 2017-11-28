@@ -3,6 +3,12 @@ An in-game console for Unity games
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f8a05421a37846c2a7a2156284a773ad)](https://www.codacy.com/app/javierbullrich/Unity-Console?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Bullrich/Unity-Console&amp;utm_campaign=Badge_Grade)
 
+![rotation](Docs/rotation.png)
+
+![custom-methods](Docs/custom-methods.png)
+
+![log-detail](Docs/logs-detail.png)
+
 ## TOC
 
 - [TOC](#TOC)
@@ -10,8 +16,9 @@ An in-game console for Unity games
 - [Adding methods](#adding-methods)
 - [Sending a custom message](#sending-a-custom-message)
 
-
 ## Setup
+
+[Download the latest release](../../releases)
 
 To setup the Console, simply drag the prefab **Console Prefab** from Blue/Console directory to the scene.
 
@@ -64,7 +71,7 @@ This will add a button with a boolean parameters set, by the default parameter, 
 
 When that button is pressed the `ChangeGateStatus` method will be called with the new boolean value.
 
- You can find an example of adding methods in [Demo.cs](https://github.com/Bullrich/Unity-Console/blob/master/Assets/Blue/Console/Demo/Demo.cs)
+ You can find an example of adding methods in [Demo.cs](Assets/Blue/Console/Demo/Demo.cs)
 
  ## Sending a custom message
 

@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 785f20f1a5ef84f74ac4d19b232892c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameConsole: {fileID: 114339379503979038, guid: 0b42c34f9f07a437f93580a76e44ef9e,
+  gameConsole: {fileID: 114436493714639900, guid: 9ff4670212ca2478aa33990be8853b00,
     type: 2}
   swipeOptions:
     swipeDirection: 2
@@ -59,3 +59,4 @@ MonoBehaviour:
     openConsoleKey: 9
   startMinified: 1
   limitOfLogs: 100
+  defaultMailDirectory: example@gmail.com

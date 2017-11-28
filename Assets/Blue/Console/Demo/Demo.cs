@@ -20,9 +20,6 @@ namespace Blue.Console.Demo
             GameConsole.AddAction(Bla, "This is a bool");
             GameConsole.AddAction(Blu, "Print in console");
             GameConsole.AddAction(error, "Print an error");
-            GameConsole.AddAction(DeleteAll, "Delete all!");
-            GameConsole.AddAction(error, "Print an error");
-            GameConsole.AddAction(error, "Print an error");
             GameConsole.AddAction(warning, "Print a warning");
             GameConsole.AddAction(SeveralErrors, "Throw several errors!");
             GameConsole.AddAction(CustomMessage, "Write a custom message");

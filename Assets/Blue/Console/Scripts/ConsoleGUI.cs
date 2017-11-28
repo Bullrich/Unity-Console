@@ -16,13 +16,14 @@ namespace Blue.Console
         private Text detailInformation;
         public ConsolePopup popup;
         public ActionButtons actionButtons;
+        public Image backgroundImage;
 
         public LogDetails logDetail;
         private ConsoleGuiManager guiManager;
         private List<ActionContainer> actionsList;
         private SwipeManager openConsoleSettings;
         private string mailSubject;
-        public string DefaultMailDirectory = "example@gmail.com";
+        private string DefaultMailDirectory = "example@gmail.com";
         private bool _minifiedConsole;
 
         public void LogMessage(LogType type, string stackTrace, string message)
@@ -33,7 +34,7 @@ namespace Blue.Console
                 stackTrace, message, info);
         }
 
-        public void init(SwipeManager swipe, bool minifyOnStart, int logLimit)
+        public void init(SwipeManager swipe, bool minifyOnStart, int logLimit, string defaultMail)
         {
             openConsoleSettings = swipe;
             guiManager = new ConsoleGuiManager(
@@ -46,6 +47,7 @@ namespace Blue.Console
             GameConsole.consoleMessage += WriteToConsole;
             GetComponent<ConsoleOutput>().init(this);
             _minifiedConsole = minifyOnStart;
+            DefaultMailDirectory = defaultMail;
 
             if (!Debug.isDebugBuild)
                 Debug.LogWarning("This isn't a development build! You won't be able to read the stack trace!");
@@ -79,9 +81,9 @@ namespace Blue.Console
 
         public void SwitchConsole()
         {
-            Image backgroundImage = GetComponent<Image>();
             backgroundImage.enabled = !backgroundImage.enabled;
-            GameObject child = transform.GetChild(0).gameObject;
+            // Game console container object
+            GameObject child = backgroundImage.gameObject.transform.GetChild(0).gameObject;
             child.SetActive(!child.activeSelf);
             if (_minifiedConsole)
                 popup.gameObject.SetActive(!backgroundImage.enabled);
@@ -183,6 +185,15 @@ namespace Blue.Console
         private static string MyEscapeURL(string url)
         {
             return WWW.EscapeURL(url).Replace("+", "%20");
+        }
+
+        private void SetCanvasPosition()
+        {
+//            if (Screen.width > Screen.height)
+//            {
+//                CanvasScaler scaler = console.GetComponent<CanvasScaler>();
+//                scaler.referenceResolution = new Vector2(1800, 600);
+//            }
         }
 
 #if UNITY_ANDROID

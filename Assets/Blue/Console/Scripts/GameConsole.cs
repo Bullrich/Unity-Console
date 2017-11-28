@@ -26,7 +26,7 @@ namespace Blue
 
         public static event ConsoleMessage consoleMessage;
 
-        public static List<ActionContainer> getActions()
+        private static List<ActionContainer> getActions()
         {
             if (actions == null)
                 actions = new List<ActionContainer>();

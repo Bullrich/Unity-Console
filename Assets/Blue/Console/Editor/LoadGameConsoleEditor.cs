@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
 // By @Bullrich
 namespace Blue.Console
@@ -29,7 +27,7 @@ namespace Blue.Console
         private void ShowValues()
         {
             _target.gameConsole =
-                (ConsoleContainer) EditorGUILayout.ObjectField("Console", _target.gameConsole, typeof(ConsoleContainer),
+                (ConsoleGUI) EditorGUILayout.ObjectField("Console", _target.gameConsole, typeof(ConsoleGUI),
                     true);
             if (_target.gameConsole == null)
                 EditorGUILayout.HelpBox("A Game Console Object must be added", MessageType.Error);
@@ -44,6 +42,10 @@ namespace Blue.Console
                     new GUIContent("Limit of logs", "The maximium amount of logs the console can store"),
                     _target.limitOfLogs);
                 SwipeOptions();
+                _target.defaultMailDirectory = EditorGUILayout.TextField(
+                    new GUIContent("Default mail directory",
+                        "The mail direction to which you wish to share the logs with the share button"),
+                    _target.defaultMailDirectory);
             }
         }
 
@@ -52,11 +54,11 @@ namespace Blue.Console
             _swipeManager = _target.swipeOptions;
             _showSwipeOptions = EditorGUILayout.Foldout(_showSwipeOptions, "Swipe Options");
             if (!_showSwipeOptions) return;
-            
+
             EditorGUILayout.BeginVertical("Box");
             _swipeManager.swipeDirection = (SwipeManager.swDirection) EditorGUILayout.EnumPopup("Swipe Direction",
                 _swipeManager.swipeDirection);
-            _swipeManager.fingersNeed = EditorGUILayout.IntSlider("Fingers need",_swipeManager.fingersNeed, 1, 4);
+            _swipeManager.fingersNeed = EditorGUILayout.IntSlider("Fingers need", _swipeManager.fingersNeed, 1, 4);
             _swipeManager.openConsoleKey = (KeyCode) EditorGUILayout.EnumPopup(
                 new GUIContent("Open Console Key", "The key used to open the console"),
                 _swipeManager.openConsoleKey);

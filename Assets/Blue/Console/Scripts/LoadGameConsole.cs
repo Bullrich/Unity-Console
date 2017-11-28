@@ -10,12 +10,12 @@ namespace Blue.Console
 {
     public class LoadGameConsole : MonoBehaviour
     {
-        public ConsoleContainer gameConsole;
+        public ConsoleGUI gameConsole;
         [SerializeField] public SwipeManager swipeOptions;
-        [Tooltip("Show a minified version of the console on start")]
-        public bool startMinified = false;
-        [Tooltip("The maximium amount of logs the console can store")]
-        public int limitOfLogs = 100;
+        [Tooltip("Show a minified version of the console on start")] public bool startMinified = false;
+        [Tooltip("The maximium amount of logs the console can store")] public int limitOfLogs = 100;
+
+        public string defaultMailDirectory = "example@gmail.com";
 
         public void Awake()
         {
@@ -33,8 +33,8 @@ namespace Blue.Console
             GameObject eventSystem = GameObject.Find(_eventSystemName);
             GameObject console = Instantiate(gameConsole.gameObject);
             console.name = gameConsole.gameObject.name;
-            ConsoleGUI guiConsole = console.transform.GetChild(0).GetComponent<ConsoleGUI>();
-            guiConsole.init(swipeOptions, startMinified, limitOfLogs);
+            ConsoleGUI guiConsole = console.GetComponent<ConsoleGUI>();
+            guiConsole.init(swipeOptions, startMinified, limitOfLogs, defaultMailDirectory);
             guiConsole.ToggleActions();
             if (Screen.width > Screen.height)
             {
@@ -83,17 +83,9 @@ namespace Blue.Console
 
         public bool didSwipe()
         {
-#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
-                return SwipedInDirection ();
-#else
-            if (Input.GetKeyDown(openConsoleKey))
-                return true;
-            return false;
-#endif
+            return Application.isMobilePlatform ? SwipedInDirection() : Input.GetKeyDown(openConsoleKey);
         }
 
-
-#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
 
         public bool SwipedInDirection()
         {
@@ -146,6 +138,5 @@ namespace Blue.Console
             }
             return false;
         }
-#endif
     }
 }
