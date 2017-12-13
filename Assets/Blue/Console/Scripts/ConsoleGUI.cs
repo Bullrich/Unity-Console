@@ -149,9 +149,14 @@ namespace Blue.Console
 
         public void ShowDetail(LogInfo.ErrorDetail detail)
         {
-            detailInformation.text = detail.logString + "\n\n" + detail.stackTrace;
+            detailInformation.text = LimitLength(detail.logString + "\n\n" + detail.stackTrace, 3000);
             mailSubject = string.Format("[{0}] {1}", detail.errorType.ToString(), detail.logString);
             popUpDetail.gameObject.SetActive(true);
+        }
+
+        private string LimitLength(string s, int l)
+        {
+            return s.Substring(0, s.Length > l ? l : s.Length);
         }
 
         public void ClosePopUp()
