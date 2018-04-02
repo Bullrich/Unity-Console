@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Blue.Console.Container;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,15 +27,16 @@ namespace Blue.Console
             }
         }
 
-        private static int CountLogs(LogType _logType, LogInfo[] logs)
+        private static int CountLogs(LogType logType, IEnumerable<LogInfo> logs)
         {
-            int _countedLogs = 0;
+            int countedLogs = 0;
             foreach (LogInfo log in logs)
             {
-                if (log.GetLogType() == _logType)
-                    _countedLogs++;
+                if (log.Type == logType)
+                    countedLogs++;
             }
-            return _countedLogs;
+
+            return countedLogs;
         }
 
         [Serializable]

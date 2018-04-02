@@ -45,26 +45,26 @@ namespace Blue
 
         public static void AddAction(booleanAction action, string actionName, bool defaultBooleanState = false)
         {
-            ActionContainer acon = new ActionContainer(ActionContainer.ActionType._bool, action, actionName);
+            ActionContainer acon = new ActionContainer(ActionContainer.ActionType.Bool, action, actionName);
             acon.boolStartStatus = defaultBooleanState;
             AddActionToList(acon);
         }
 
         public static void AddAction(voidAction action, string actionName)
         {
-            AddActionToList(new ActionContainer(ActionContainer.ActionType._void, action, actionName));
+            AddActionToList(new ActionContainer(ActionContainer.ActionType.Void, action, actionName));
         }
 
         public static void AddAction(floatAction action, string actionName, float defaultFloatValue = 0f)
         {
-            ActionContainer acon = new ActionContainer(ActionContainer.ActionType._float, action, actionName);
+            ActionContainer acon = new ActionContainer(ActionContainer.ActionType.Float, action, actionName);
             acon.floatDefaultValue = defaultFloatValue;
             AddActionToList(acon);
         }
 
         public static void AddAction(intAction action, string actionName, int defaultIntValue = 0)
         {
-            ActionContainer acon = new ActionContainer(ActionContainer.ActionType._int, action, actionName);
+            ActionContainer acon = new ActionContainer(ActionContainer.ActionType.Int, action, actionName);
             acon.intDefaultValue = defaultIntValue;
             AddActionToList(acon);
         }
@@ -85,17 +85,6 @@ namespace Blue
                     break;
                 }
             }
-        }
-    }
-
-    public abstract class ActionButtonBehavior : MonoBehaviour
-    {
-        protected string actionName = null;
-        public abstract void Init(ActionContainer action);
-
-        public string GetActionName()
-        {
-            return actionName;
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Blue.Console.Container;
+using Blue.Console.Handler;
 using UnityEngine;
 using UnityEngine.UI;
+// ReSharper disable InconsistentNaming
 
 // Mady by @Bullrich
 
@@ -13,31 +16,33 @@ namespace Blue.Console
         [Tooltip("Prefab object")] public LogInfo logInfo;
         public Transform logScroll, popUpDetail;
         private Transform logSection, actionSection;
-        private Text detailInformation;
+        private Text detailInformation; 
         public ConsolePopup popup;
         public ActionButtons actionButtons;
         public Image backgroundImage;
 
         public LogDetails logDetail;
-        private ConsoleGuiManager guiManager;
+        private ConsoleManager _manager;
         private List<ActionContainer> actionsList;
         private SwipeManager openConsoleSettings;
-        private string mailSubject;
-        private string DefaultMailDirectory = "example@gmail.com";
         private bool _minifiedConsole;
+
+        private ShareHandler _share;
+
+        private string mailSubject;
 
         public void LogMessage(LogType type, string stackTrace, string message)
         {
             LogInfo info = Instantiate(logInfo);
-            info.gui = this;
-            guiManager.LogMessage(type,
+            info.Gui = this;
+            _manager.LogMessage(type,
                 stackTrace, message, info);
         }
 
         public void init(SwipeManager swipe, bool minifyOnStart, int logLimit, string defaultMail)
         {
             openConsoleSettings = swipe;
-            guiManager = new ConsoleGuiManager(
+            _manager = new ConsoleManager(
                 logScroll.transform.parent.GetComponent<ScrollRect>(), logDetail, popup, logLimit);
             detailInformation = popUpDetail.GetChild(0).GetChild(0).GetComponent<Text>();
             CleanConsole();
@@ -47,7 +52,7 @@ namespace Blue.Console
             GameConsole.consoleMessage += WriteToConsole;
             GetComponent<ConsoleOutput>().init(this);
             _minifiedConsole = minifyOnStart;
-            DefaultMailDirectory = defaultMail;
+            _share = new ShareHandler(defaultMail);
 
             if (!Debug.isDebugBuild)
                 Debug.LogWarning("This isn't a development build! You won't be able to read the stack trace!");
@@ -57,7 +62,7 @@ namespace Blue.Console
         {
             ActionButtonBehavior actionButton = actionButtons.actionBtnPrefab;
             Transform parent = actionButtons.actionsContainer.transform;
-            if (acon.actType != ActionContainer.ActionType._void)
+            if (acon.actType != ActionContainer.ActionType.Void)
             {
                 actionButton = actionButtons.variablesBtnPrefab;
                 parent = actionButtons.variablesContainer.transform;
@@ -65,12 +70,12 @@ namespace Blue.Console
             ActionButtonBehavior spawnedBtn = Instantiate(actionButton);
             spawnedBtn.transform.SetParent(parent, false);
             spawnedBtn.Init(acon);
-            guiManager.AddAction(spawnedBtn);
+            _manager.AddAction(spawnedBtn);
         }
 
         private void RemoveActionElement(string _elementName)
         {
-            guiManager.RemoveAction(_elementName);
+            _manager.RemoveAction(_elementName);
         }
 
         private void Update()
@@ -94,6 +99,7 @@ namespace Blue.Console
             LogMessage(LogType.Log, message, title);
         }
 
+        // TODO: Move the logic to anoither script and document it
         private void AddListElement(List<ActionContainer> actions)
         {
             if (actionsList == null)
@@ -112,20 +118,20 @@ namespace Blue.Console
                     }
                 else if (newElements < 0)
                 {
-                    int _i = 0;
+                    int ii = 0;
                     foreach (ActionContainer action in actionsList)
                     {
-                        if (action.actionName != actions[_i].actionName)
+                        if (action.actionName != actions[ii].actionName)
                         {
                             RemoveActionElement(action.actionName);
                             break;
                         }
-                        else if (_i + 1 > actions.Count - 1)
+                        else if (ii + 1 > actions.Count - 1)
                         {
                             print(action.actionName + " is the last one!");
                             RemoveActionElement(action.actionName);
                         }
-                        _i++;
+                        ii++;
                     }
                 }
             }
@@ -144,13 +150,13 @@ namespace Blue.Console
         {
             foreach (Transform t in logScroll)
                 Destroy(t.gameObject);
-            guiManager.ClearList();
+            _manager.ClearList();
         }
 
-        public void ShowDetail(LogInfo.ErrorDetail detail)
+        public void ShowDetail(ILogInfo detail)
         {
-            detailInformation.text = LimitLength(detail.logString + "\n\n" + detail.stackTrace, 3000);
-            mailSubject = string.Format("[{0}] {1}", detail.errorType.ToString(), detail.logString);
+            detailInformation.text = LimitLength(detail.Log + "\n\n" + detail.Stack, 3000);
+            mailSubject = string.Format("[{0}] {1}", detail.Type.ToString(), detail.Log);
             popUpDetail.gameObject.SetActive(true);
         }
 
@@ -169,58 +175,16 @@ namespace Blue.Console
             _minifiedConsole = minifiedStatus;
         }
 
-        public void CopyTextToClipboard()
+        public void Share()
         {
             string textToSend = detailInformation.text;
-#if !UNITY_ANDROID
-            SendEmail(textToSend);
-#else
-            ShareTextOnAndroid(Application.productName, textToSend);
-#endif
+            _share.Share(mailSubject, textToSend);
         }
 
-        private void SendEmail(string messageBody)
-        {
-            string email = DefaultMailDirectory;
-            string subject = MyEscapeURL(mailSubject);
-            string body = MyEscapeURL(messageBody);
-            Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
-        }
-
-        private static string MyEscapeURL(string url)
-        {
-            return WWW.EscapeURL(url).Replace("+", "%20");
-        }
-
-        private void SetCanvasPosition()
-        {
-//            if (Screen.width > Screen.height)
-//            {
-//                CanvasScaler scaler = console.GetComponent<CanvasScaler>();
-//                scaler.referenceResolution = new Vector2(1800, 600);
-//            }
-        }
-
-#if UNITY_ANDROID
-        [Obsolete("Deprecated because SendEmail works better and it's multiplatform")]
-        private static void ShareTextOnAndroid(string messageTitle, string messageBody)
-        {
-            AndroidJavaClass intentClass = new AndroidJavaClass("android.content.Intent");
-            AndroidJavaObject intentObject = new AndroidJavaObject("android.content.Intent");
-            intentObject.Call<AndroidJavaObject>("setAction", intentClass.GetStatic<string>("ACTION_SEND"));
-            intentObject.Call<AndroidJavaObject>("setType", "text/plain");
-            intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_SUBJECT"),
-                messageTitle);
-            intentObject.Call<AndroidJavaObject>("putExtra", intentClass.GetStatic<string>("EXTRA_TEXT"), messageBody);
-            AndroidJavaClass unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-            AndroidJavaObject currentActivity = unity.GetStatic<AndroidJavaObject>("currentActivity");
-            currentActivity.Call("startActivity", intentObject);
-        }
-#endif
-
+        // TODO: Implement
         public void FilterLogs(FilterAction alertButton)
         {
-            guiManager.FilterList(alertButton.logType);
+            _manager.FilterList(alertButton.logType);
             Image buttonSprite = alertButton.transform.GetChild(0).GetComponent<Image>();
             Color defaultColor = Color.white;
             if (alertButton.logType == LogType.Error)
@@ -232,12 +196,12 @@ namespace Blue.Console
 
         public void FilterByString(string _filterMessage)
         {
-            guiManager.FilterList(_filterMessage);
+            _manager.FilterList(_filterMessage);
         }
 
         public void PauseConsole()
         {
-            guiManager.PauseList();
+            _manager.PauseList();
         }
 
         #endregion

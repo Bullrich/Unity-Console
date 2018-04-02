@@ -33,4 +33,4 @@ sysinfo.txt
 /.vscode
 # Rider
 /.idea
-Assets/Plugins/Editor/JetBrains
+Assets/Plugins*
